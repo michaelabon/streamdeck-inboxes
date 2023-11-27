@@ -1,0 +1,9 @@
+[submodule "fastmail/ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin/sdk"]
+	path = fastmail/ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin/sdk
+	url = https://github.com/elgatosf/streamdeck-javascript-sdk
+[submodule "marvin/ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin/sdk"]
+	path = marvin/ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin/sdk
+	url = https://github.com/elgatosf/streamdeck-javascript-sdk
+[submodule "ynab/ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin/sdk"]
+	path = ynab/ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin/sdk
+	url = https://github.com/elgatosf/streamdeck-javascript-sdk

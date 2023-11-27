@@ -1,0 +1,11 @@
+{
+  "Description": "Show your tasks to process from Marvin",
+  "Name": "Marvin Inbox",
+  "ca.michaelabon.streamdeck-inboxes.marvin.action": {
+    "Name": "Marvin Inbox",
+    "Tooltip": "Show your task count from your Inbox. Open with a tap."
+  },
+  "Localization": {
+
+  }
+}

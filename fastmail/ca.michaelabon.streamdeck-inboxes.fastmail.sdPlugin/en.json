@@ -1,0 +1,11 @@
+{
+  "Description": "Show your emails to process from Fastmail",
+  "Name": "Fastmail Inbox",
+  "ca.michaelabon.streamdeck-inboxes.fastmail.action": {
+    "Name": "Fastmail Inbox",
+    "Tooltip": "Show your unread and total emails in your inbox. Open with a tap."
+  },
+  "Localization": {
+
+  }
+}

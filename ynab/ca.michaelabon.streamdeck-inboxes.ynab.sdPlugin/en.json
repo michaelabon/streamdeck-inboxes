@@ -1,0 +1,11 @@
+{
+  "Description": "Show your unprocessed transactions in YNAB",
+  "Name": "YNAB Unprocessed Transactions",
+  "ca.michaelabon.streamdeck-inboxes.ynab.action": {
+    "Name": "YNAB Unprocessed Transactions",
+    "Tooltip": "Show your unprocessed transactions in YNAB. Open with a tap."
+  },
+  "Localization": {
+
+  }
+}
