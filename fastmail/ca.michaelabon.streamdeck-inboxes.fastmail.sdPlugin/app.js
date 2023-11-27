@@ -21,7 +21,7 @@ const doUpdate = () => {
 		})
 		.catch((err) => {
 			$SD.logMessage(`EEEEE: ${err}`)
-			$SD.setTitle(xContext, "!")
+			$SD.setTitle(xContext, padRight("!", 7, " "))
 			$SD.showAlert(xContext)
 		})
 }

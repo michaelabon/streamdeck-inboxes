@@ -9,7 +9,6 @@ let marvinServer
 let marvinDatabase
 let marvinUser
 let marvinPassword
-let marvinSettings
 
 let xContext
 
@@ -21,7 +20,11 @@ const doUpdate = () => {
 			console.log("SUCCESS!", count)
 			return $SD.setTitle(xContext, count)
 		})
-		.catch((err) => $SD.logMessage(`EEEEE: ${err}`))
+		.catch((err) => {
+			$SD.logMessage(`EEEEE: ${err}`)
+			$SD.setTitle(xContext, padRight("!", 7, " "))
+			$SD.showAlert(xContext)
+		})
 }
 
 /**
