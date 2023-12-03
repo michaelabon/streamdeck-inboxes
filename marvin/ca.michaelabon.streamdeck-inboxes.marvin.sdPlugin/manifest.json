@@ -26,17 +26,23 @@
 		{
 			"Icon": "actions/template/assets/action_key",
 			"TitleAlignment": "top",
-			"FontSize": "20",
+			"FontSize": "16",
 			"Name": "Marvin Inbox Action",
 			"Controllers": ["Keypad"],
 			"States": [
 				{
 					"Image": "actions/template/assets/action_key",
 					"TitleAlignment": "top",
-					"FontSize": "20"
+					"FontSize": "16"
+				},
+				{
+					"Image": "actions/template/assets/action_gold_key",
+					"TitleAlignment": "top",
+					"FontSize": "16"
 				}
 			],
 			"Tooltip": "This is an example tooltip",
+			"DisableAutomaticStates": true,
 			"UUID": "ca.michaelabon.streamdeck-inboxes.marvin.action",
 			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html",
 			"UserTitleEnabled": false

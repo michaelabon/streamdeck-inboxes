@@ -16,8 +16,15 @@ const doUpdate = () => {
 	}
 	getTransactionsCount(apiToken)
 		.then((count) => {
+			const padding = count >= 100 ? 8 : 7
+			let title = padRight(count, padding, " ")
+			if (count === 0) {
+				title = ""
+			}
+
 			console.log(`SUCCESS on interval! “${count}”`)
-			return $SD.setTitle(xContext, count)
+			$SD.setState(xContext, count > 0 ? 0 : 1)
+			return $SD.setTitle(xContext, title)
 		})
 		.catch((err) => {
 			$SD.logMessage(`EEEEE: ${err}`)
@@ -57,8 +64,12 @@ $SD.onConnected(
 )
 
 myAction.onWillAppear(({ context, payload }) => {
+	$SD.setTitle(context, padRight("?", 7, " "))
+
 	saveSettings(payload)
 	xContext = context
+
+	doUpdate()
 })
 
 myAction.onWillDisappear((_x) => {
@@ -101,7 +112,7 @@ async function getTransactionsCount(apiToken) {
 		.filter((tx) => !tx.account_name.startsWith("[D]"))
 		.filter((tx) => !tx.account_name.startsWith("[MD]"))
 
-	return padRight(filtered.length, 7, " ")
+	return filtered.length
 }
 
 function padRight(val, num, str) {

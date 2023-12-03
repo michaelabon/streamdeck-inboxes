@@ -26,16 +26,22 @@
 		{
 			"Icon": "actions/template/assets/action_key",
 			"TitleAlignment": "top",
-			"FontSize": "20",
+			"FontSize": "16",
 			"Name": "YNAB Inbox Action",
 			"Controllers": ["Keypad"],
 			"States": [
 				{
 					"Image": "actions/template/assets/action_key",
 					"TitleAlignment": "top",
-					"FontSize": "20"
+					"FontSize": "16"
+				},
+				{
+					"Image": "actions/template/assets/action_gold_key",
+					"TitleAlignment": "top",
+					"FontSize": "16"
 				}
 			],
+			"DisableAutomaticStates": true,
 			"Tooltip": "This is an example tooltip",
 			"UUID": "ca.michaelabon.streamdeck-inboxes.ynab.action",
 			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html",

@@ -16,8 +16,15 @@ const MINUTES_PER_MILLISECOND = 1000 * 60
 const doUpdate = () => {
 	getInboxCount()
 		.then((count) => {
+			const padding = count >= 100 ? 8 : 7
+			let title = padRight(count, padding, " ")
+			if (count === 0) {
+				title = ""
+			}
+
 			console.log("SUCCESS!", count)
-			$SD.setTitle(xContext, count)
+			$SD.setState(xContext, count > 0 ? 0 : 1)
+			return $SD.setTitle(xContext, title)
 		})
 		.catch((err) => {
 			$SD.logMessage(`EEEEE: ${err}`)
@@ -171,10 +178,10 @@ async function getInboxCount() {
 
 	const folders = methodResponse[1].list
 	const inbox = folders.find((folder) => folder.role === "inbox")
-	const totalEmails = inbox.totalEmails
+	// const totalEmails = inbox.totalEmails
 	const unreadEmails = inbox.unreadEmails
 
-	return padRight(`${unreadEmails}/${totalEmails}`, 7, " ")
+	return unreadEmails
 }
 
 function padRight(val, num, str) {

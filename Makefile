@@ -19,8 +19,8 @@ ifeq ($(UNAME), Darwin)
 		ln -s $(ROOT_DIR)/$$dir/ca.michaelabon.streamdeck-inboxes.$$dir.sdPlugin   "${HOME}/Library/Application Support/com.elgato.StreamDeck/Plugins"; \
 	done
 else
-	FOR ${PERCENT}${PERCENT}A IN ($(PLUGINS)) DO (
-		mklink /D $(PERCENT)AppData$(PERCENT)\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.${PERCENT}${PERCENT}A.sdPlugin  $(ROOT_DIR)/${PERCENT}${PERCENT}A/ca.michaelabon.streamdeck-inboxes.${PERCENT}${PERCENT}A.sdPlugin
-	)
+	mklink /D "$(PERCENT)AppData$(PERCENT)\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin"   "${PERCENT}cd${PERCENT}/fastmail/ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin"
+	mklink /D "$(PERCENT)AppData$(PERCENT)\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin"   "${PERCENT}cd${PERCENT}/marvin/ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin"
+	mklink /D "$(PERCENT)AppData$(PERCENT)\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin"   "${PERCENT}cd${PERCENT}/ynab/ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin"
 endif
 

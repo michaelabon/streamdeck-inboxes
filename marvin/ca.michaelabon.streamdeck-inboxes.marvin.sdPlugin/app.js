@@ -17,8 +17,15 @@ const MINUTES_PER_MILLISECOND = 1000 * 60
 const doUpdate = () => {
 	getInboxCount()
 		.then((count) => {
+			const padding = count >= 100 ? 8 : 7
+			let title = padRight(count, padding, " ")
+			if (count === 0) {
+				title = ""
+			}
+
 			console.log("SUCCESS!", count)
-			return $SD.setTitle(xContext, count)
+			$SD.setState(xContext, count > 0 ? 0 : 1)
+			return $SD.setTitle(xContext, title)
 		})
 		.catch((err) => {
 			$SD.logMessage(`EEEEE: ${err}`)
@@ -145,7 +152,7 @@ async function getInboxCount() {
 		.filter((task) => !task.done)
 		.filter((task) => !task.recurring)
 
-	return padRight(filtered.length, 7, " ")
+	return filtered.length
 }
 
 function padRight(val, num, str) {
