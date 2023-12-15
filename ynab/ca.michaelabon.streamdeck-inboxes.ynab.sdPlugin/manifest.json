@@ -5,7 +5,7 @@
 	"Description": "Show your transactions to process from YNAB",
 	"Name": "YNAB Inbox",
 	"Icon": "actions/template/assets/action_key",
-	"URL": "https://www.github.com/michaelabon",
+	"URL": "https://github.com/michaelabon/streamdeck-inboxes",
 	"Version": "1.0.2",
 	"Software": {
 		"MinimumVersion": "5.0"

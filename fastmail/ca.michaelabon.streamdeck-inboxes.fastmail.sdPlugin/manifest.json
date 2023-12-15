@@ -1,51 +1,53 @@
 {
-	"SDKVersion": 2,
+	"Actions": [
+		{
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"FontSize": "16",
+			"Icon": "actions/template/assets/action_key",
+			"Name": "Fastmail Inbox",
+			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html",
+			"States": [
+				{
+					"FontSize": "16",
+					"Image": "actions/template/assets/action_key",
+					"TitleAlignment": "top"
+				},
+				{
+					"FontSize": "16",
+					"Image": "actions/template/assets/action_gold_key",
+					"TitleAlignment": "top"
+				}
+			],
+			"TitleAlignment": "top",
+			"Tooltip": "Show your unread and total emails in your inbox. Open with a tap.",
+			"UUID": "ca.michaelabon.streamdeck-inboxes.fastmail.action",
+			"UserTitleEnabled": false
+		}
+	],
 	"Author": "Michael Abon",
+	"Category": "Inboxes",
+	"CategoryIcon": "actions/template/assets/action_key",
 	"CodePath": "app.html",
 	"Description": "Show your tasks to process from Fastmail",
-	"Name": "Fastmail Inbox",
 	"Icon": "actions/template/assets/action_key",
-	"URL": "https://www.github.com/michaelabon",
-	"Version": "1.0.3",
+	"Name": "Fastmail Inbox",
+	"OS": [
+		{
+			"MinimumVersion": "10.11",
+			"Platform": "mac"
+		},
+		{
+			"MinimumVersion": "10",
+			"Platform": "windows"
+		}
+	],
+	"SDKVersion": 2,
 	"Software": {
 		"MinimumVersion": "5.0"
 	},
-	"OS": [
-		{
-			"Platform": "mac",
-			"MinimumVersion": "10.11"
-		},
-		{
-			"Platform": "windows",
-			"MinimumVersion": "10"
-		}
-	],
-	"Category": "Inboxes",
-	"CategoryIcon": "actions/template/assets/action_key",
-	"Actions": [
-		{
-			"Icon": "actions/template/assets/action_key",
-			"TitleAlignment": "top",
-			"FontSize": "16",
-			"Name": "Fastmail Inbox",
-			"Controllers": ["Keypad"],
-			"States": [
-				{
-					"Image": "actions/template/assets/action_key",
-					"TitleAlignment": "top",
-					"FontSize": "16"
-				},
-				{
-					"Image": "actions/template/assets/action_gold_key",
-					"TitleAlignment": "top",
-					"FontSize": "16"
-				}
-			],
-			"DisableAutomaticStates": true,
-			"Tooltip": "Show your unread and total emails in your inbox. Open with a tap.",
-			"UUID": "ca.michaelabon.streamdeck-inboxes.fastmail.action",
-			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html",
-			"UserTitleEnabled": false
-		}
-	]
+	"URL": "https://github.com/michaelabon/streamdeck-inboxes",
+	"Version": "1.0.3"
 }
