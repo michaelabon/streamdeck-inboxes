@@ -6,8 +6,11 @@ const myAction = new Action("ca.michaelabon.streamdeck-inboxes.ynab.action")
 let interval = null
 let apiToken
 let xContext
+let nextAccount
 
 const MINUTES_PER_MILLISECOND = 1000 * 60
+
+const budget = { id: "003b7b9b-22a9-4ec9-b943-201c7d014287" }
 
 const doUpdate = () => {
 	if (!apiToken) {
@@ -81,9 +84,12 @@ myAction.onWillDisappear((_x) => {
 myAction.onKeyUp(({ action, context, device, event, payload }) => {
 	doUpdate()
 
+	const url = nextAccount
+		? `https://app.ynab.com/${budget.id}/accounts/${nextAccount}`
+		: "https://app.ynab.com"
 	$SD.send(context, Events.openUrl, {
 		payload: {
-			url: "https://app.ynab.com",
+			url: url,
 		},
 	})
 })
@@ -94,8 +100,6 @@ myAction.onDidReceiveSettings(({ context, payload }) => {
 })
 
 async function getTransactionsCount(apiToken) {
-	const budget = { id: "003b7b9b-22a9-4ec9-b943-201c7d014287" }
-
 	const transactions = await (
 		await fetch(
 			`https://api.ynab.com/v1/budgets/${budget.id}/transactions?type=unapproved`,
@@ -111,6 +115,12 @@ async function getTransactionsCount(apiToken) {
 	const filtered = transactions.data.transactions
 		.filter((tx) => !tx.account_name.startsWith("[D]"))
 		.filter((tx) => !tx.account_name.startsWith("[MD]"))
+
+	if (filtered.length === 0) {
+		nextAccount = null
+	} else {
+		nextAccount = filtered[0].account_id
+	}
 
 	return filtered.length
 }
