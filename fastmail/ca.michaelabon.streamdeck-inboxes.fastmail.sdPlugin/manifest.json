@@ -6,18 +6,18 @@
 			],
 			"DisableAutomaticStates": true,
 			"FontSize": "16",
-			"Icon": "actions/template/assets/action_key",
+			"Icon": "actions/template/assets/action_icon",
 			"Name": "Fastmail Inbox",
 			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html",
 			"States": [
 				{
 					"FontSize": "16",
-					"Image": "actions/template/assets/action_key",
+					"Image": "actions/template/assets/button_normal_icon",
 					"TitleAlignment": "top"
 				},
 				{
 					"FontSize": "16",
-					"Image": "actions/template/assets/action_gold_key",
+					"Image": "actions/template/assets/button_gold_icon",
 					"TitleAlignment": "top"
 				}
 			],
@@ -29,7 +29,7 @@
 	],
 	"Author": "Michael Abon",
 	"Category": "Inboxes",
-	"CategoryIcon": "actions/template/assets/action_key",
+	"CategoryIcon": "actions/template/assets/category_icon",
 	"CodePath": "app.html",
 	"Description": "Show your tasks to process from Fastmail",
 	"Icon": "actions/template/assets/action_key",

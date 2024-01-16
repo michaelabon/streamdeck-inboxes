@@ -108,7 +108,9 @@ myAction.onDidReceiveSettings(({ context, payload }) => {
 
 async function getTransactionsCount(apiToken) {
 	if (!budgetUuid) {
-		throw new Error("No budgetUuid found. Open the Property Inspector and copy your budget UUID")
+		throw new Error(
+			"No budgetUuid found. Open the Property Inspector and copy your budget UUID",
+		)
 	}
 	const transactions = await (
 		await fetch(

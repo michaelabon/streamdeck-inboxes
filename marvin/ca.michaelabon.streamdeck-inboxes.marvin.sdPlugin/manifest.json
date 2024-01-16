@@ -21,10 +21,10 @@
     }
   ],
   "Category": "Inboxes",
-  "CategoryIcon": "actions/template/assets/action_key",
+  "CategoryIcon": "actions/template/assets/category_icon",
   "Actions": [
     {
-      "Icon": "actions/template/assets/action_key",
+      "Icon": "actions/template/assets/action_icon",
       "TitleAlignment": "top",
       "FontSize": "16",
       "Name": "Marvin Inbox Action",
@@ -33,12 +33,12 @@
       ],
       "States": [
         {
-          "Image": "actions/template/assets/action_key",
+          "Image": "actions/template/assets/button_normal_icon",
           "TitleAlignment": "top",
           "FontSize": "16"
         },
         {
-          "Image": "actions/template/assets/action_gold_key",
+          "Image": "actions/template/assets/button_gold_icon",
           "TitleAlignment": "top",
           "FontSize": "16"
         }
