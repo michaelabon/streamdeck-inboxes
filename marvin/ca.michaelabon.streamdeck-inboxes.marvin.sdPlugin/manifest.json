@@ -6,7 +6,7 @@
   "Name": "Marvin Inbox",
   "Icon": "actions/template/assets/action_key",
   "URL": "https://github.com/michaelabon/streamdeck-inboxes",
-  "Version": "1.0.3",
+  "Version": "1.1.0",
   "Software": {
     "MinimumVersion": "5.0"
   },
