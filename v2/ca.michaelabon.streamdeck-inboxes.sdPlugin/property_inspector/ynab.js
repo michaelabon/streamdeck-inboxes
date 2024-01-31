@@ -1,5 +1,5 @@
-/// <reference path="../../../sdk/js/property-inspector.js" />
-/// <reference path="../../../sdk/js/utils.js" />
+/// <reference path="./sdk/js/property-inspector.js" />
+/// <reference path="./sdk/js/utils.js" />
 
 $PI.onConnected((jsn) => {
     const form = document.querySelector('#property-inspector');

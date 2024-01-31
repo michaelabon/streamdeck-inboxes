@@ -40,6 +40,26 @@
 			"DisableAutomaticStates": true,
 			"UserTitleEnabled": false,
 			"PropertyInspectorPath": "property_inspector/fastmail.html"
+		},
+		{
+			"Icon": "icons/ynab_action",
+			"Name": "YNAB Unapproved Transactions Action",
+			"States": [
+				{
+					"FontSize": "16",
+					"Image": "icons/ynab_button_default",
+					"TitleAlignment": "top"
+				},
+				{
+					"FontSize": "16",
+					"Image": "icons/ynab_button_gold",
+					"TitleAlignment": "top"
+				}
+			],
+			"UUID": "ca.michaelabon.streamdeck-inboxes.ynab.action",
+			"DisableAutomaticStates": true,
+			"UserTitleEnabled": false,
+			"PropertyInspectorPath": "property_inspector/ynab.html"
 		}
 	],
 	"$comment-marvin-action": {

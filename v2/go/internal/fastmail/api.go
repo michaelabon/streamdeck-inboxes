@@ -1,19 +1,15 @@
 package fastmail
 
 import (
-	"context"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"log"
-	"strconv"
+	"net/http"
 	"time"
 
-	"ca.michaelabon.inboxes/internal/display"
-
-	"github.com/hashicorp/go-retryablehttp"
-	"github.com/samwho/streamdeck"
 	"golang.org/x/exp/slices"
 )
 
@@ -21,48 +17,11 @@ type Settings struct {
 	ApiToken string
 }
 
-const (
-	DefaultState = 0
-	GoldState    = 1
-)
-
-func FetchAndUpdate(client *streamdeck.Client, ctx context.Context, settings *Settings) error {
-	unseenCount, err := getUnseenCount(settings)
-	if err != nil {
-		log.Println("error while fetching unseen count", err)
-		newErr := client.SetTitle(ctx, display.PadRight("!"), streamdeck.HardwareAndSoftware)
-		if newErr != nil {
-			log.Println("error while settings icon title with error", err)
-			return newErr
-		}
-		return err
+func FetchUnseenCount(settings *Settings) (uint, error) {
+	if settings.ApiToken == "" {
+		return 0, errors.New("missing ApiToken")
 	}
-
-	if unseenCount == 0 {
-		err = client.SetState(ctx, GoldState)
-		if err != nil {
-			log.Println("error while setting state", err)
-			return err
-		}
-		err = client.SetTitle(ctx, "", streamdeck.HardwareAndSoftware)
-		if err != nil {
-			log.Println("error while setting icon title with unseen count", err)
-			return err
-		}
-	} else {
-		err = client.SetState(ctx, DefaultState)
-		if err != nil {
-			log.Println("error while setting state", err)
-			return err
-		}
-		err = client.SetTitle(ctx, display.PadRight(strconv.Itoa(int(unseenCount))), streamdeck.HardwareAndSoftware)
-		if err != nil {
-			log.Println("error while setting icon title with unseen count", err)
-			return err
-		}
-	}
-
-	return nil
+	return getUnseenCount(settings)
 }
 
 type MailboxGetResponse struct {
@@ -84,9 +43,9 @@ type SessionResponse struct {
 	PrimaryAccounts map[string]string
 }
 
-func makeRequest(url, method, bearer string, body interface{}) ([]byte, error) {
-	client := retryablehttp.NewClient()
-	req, err := retryablehttp.NewRequest(method, url, body)
+func makeRequest(url, method, bearer string, body io.Reader) ([]byte, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		log.Println("[fastmail]", "error while newing request", err)
 		return nil, err
@@ -112,7 +71,6 @@ func makeRequest(url, method, bearer string, body interface{}) ([]byte, error) {
 
 	resBody, err := io.ReadAll(res.Body)
 
-	log.Println("BODY RETURNED", string(resBody))
 	return resBody, nil
 }
 
@@ -120,7 +78,7 @@ func makeGetRequest(url, bearer string) ([]byte, error) {
 	return makeRequest(url, "GET", bearer, nil)
 }
 
-func makePostRequest(url string, bearer string, body interface{}) ([]byte, error) {
+func makePostRequest(url string, bearer string, body io.Reader) ([]byte, error) {
 	return makeRequest(url, "POST", bearer, body)
 }
 
@@ -157,13 +115,13 @@ func getUnseenCount(settings *Settings) (uint, error) {
 			"0"
 		]]
 	}`, accountId))
-	rawApiResponse, err := makePostRequest(apiUrl, settings.ApiToken, apiBody)
+	rawApiResponse, err := makePostRequest(apiUrl, settings.ApiToken, bytes.NewBuffer(apiBody))
 	if err != nil {
 		log.Println("[fastmail]", "error while posting request", err)
 		return 0, err
 	}
 
-	apiResponse := &ApiResponse{}
+	apiResponse := &apiResponse{}
 	err = json.Unmarshal(rawApiResponse, apiResponse)
 	if err != nil {
 		log.Println("[fastmail]", "error while unmarshalling session response", err)
@@ -185,7 +143,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 const RefreshInterval = time.Minute
 
-type ApiResponse struct {
+type apiResponse struct {
 	MethodResponses []rawInvocation `json:"methodResponses"`
 }
 
@@ -198,8 +156,6 @@ type rawInvocation struct {
 func (i *rawInvocation) UnmarshalJSON(data []byte) error {
 	var methodName, callId string
 	var args MailboxGetResponse
-
-	log.Println("[fastmail] [rawInvocation.UnmarshalJSON] data", string(data))
 
 	// Slice so we can detect invalid size.
 	triplet := make([]json.RawMessage, 0, 3)

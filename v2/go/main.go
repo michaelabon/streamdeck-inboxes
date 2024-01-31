@@ -1,17 +1,13 @@
 package main
 
 import (
+	"ca.michaelabon.inboxes/internal/display"
 	"context"
-	"encoding/json"
-	"log"
-	"net/url"
-	"os"
-	"time"
-
-	"ca.michaelabon.inboxes/internal/fastmail"
-	"ca.michaelabon.inboxes/internal/gmail"
-
+	"fmt"
 	"github.com/samwho/streamdeck"
+	"log"
+	"os"
+	"strconv"
 )
 
 func main() {
@@ -46,130 +42,62 @@ func run(ctx context.Context) error {
 	return client.Run()
 }
 
-type GmailStorage struct {
-	Ctx      context.Context
-	Client   *streamdeck.Client
-	Settings *gmail.Settings
-}
-
-type FastmailStorage struct {
-	Ctx      context.Context
-	Client   *streamdeck.Client
-	Settings *fastmail.Settings
-}
-
 func setup(client *streamdeck.Client) {
-	gmailStorage := GmailStorage{}
-	fastmailStorage := FastmailStorage{}
+	setupFastmail(client)
+	setupGmail(client)
+	setupYnab(client)
+}
 
-	gmailAction := client.Action("ca.michaelabon.streamdeck-inboxes.gmail.action")
+func logEventError(event streamdeck.Event, err error) error {
+	log.Printf("[%s][%s] %v\n", event.Action, event.Event, err)
+	return err
+}
 
-	gmailAction.RegisterHandler(streamdeck.WillAppear, func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-		p := streamdeck.WillAppearPayload{}
-		if err := json.Unmarshal(event.Payload, &p); err != nil {
-			return err
-		}
-		if err := json.Unmarshal(p.Settings, &gmailStorage.Settings); err != nil {
-			return err
-		}
+const (
+	defaultState = 0
+	goldState    = 1
+)
 
-		gmailStorage.Ctx = ctx
-		gmailStorage.Client = client
+func setTitle(ctx context.Context, client *streamdeck.Client) func(uint, error) error {
+	return func(unseenCount uint, origErr error) error {
+		if origErr != nil {
+			newErr := client.SetTitle(ctx, display.PadRight("!"), streamdeck.HardwareAndSoftware)
+			if newErr != nil {
+				return fmt.Errorf("error setting title: %w  -- %w", newErr, origErr)
+			}
 
-		return gmail.FetchAndUpdate(client, ctx, gmailStorage.Settings)
-	})
-
-	gmailAction.RegisterHandler(streamdeck.DidReceiveSettings, func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-		p := streamdeck.DidReceiveSettingsPayload{}
-		if err := json.Unmarshal(event.Payload, &p); err != nil {
-			return err
-		}
-		if err := json.Unmarshal(p.Settings, &gmailStorage.Settings); err != nil {
-			return err
-		}
-
-		gmailStorage.Ctx = ctx
-		gmailStorage.Client = client
-
-		return gmail.FetchAndUpdate(client, ctx, gmailStorage.Settings)
-	})
-
-	gmailAction.RegisterHandler(streamdeck.KeyUp, func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-		p := streamdeck.KeyUpPayload{}
-		if err := json.Unmarshal(event.Payload, &p); err != nil {
-			return err
-		}
-		if err := json.Unmarshal(p.Settings, &gmailStorage.Settings); err != nil {
-			return err
+			newErr = client.SetState(ctx, defaultState)
+			if newErr != nil {
+				return fmt.Errorf("error setting state: %w  -- %w", newErr, origErr)
+			}
+			return origErr
 		}
 
-		gmailStorage.Ctx = ctx
-		gmailStorage.Client = client
-
-		gmailUrl, err := url.Parse("https://mail.google.com/mail/u/")
-		if err != nil {
-			return err
-		}
-
-		gmailUrl.Query().Set("authuser", gmailStorage.Settings.Username)
-		err = client.OpenURL(ctx, *gmailUrl)
-		if err != nil {
-			return err
+		var err error
+		if unseenCount == 0 {
+			err = client.SetState(ctx, goldState)
+			if err != nil {
+				log.Println("error while setting state", err)
+				return err
+			}
+			err = client.SetTitle(ctx, "", streamdeck.HardwareAndSoftware)
+			if err != nil {
+				log.Println("error while setting icon title with unseen count", err)
+				return err
+			}
+		} else {
+			err = client.SetState(ctx, defaultState)
+			if err != nil {
+				log.Println("error while setting state", err)
+				return err
+			}
+			err = client.SetTitle(ctx, display.PadRight(strconv.Itoa(int(unseenCount))), streamdeck.HardwareAndSoftware)
+			if err != nil {
+				log.Println("error while setting icon title with unseen count", err)
+				return err
+			}
 		}
 
 		return nil
-	})
-
-	fastmailAction := client.Action("ca.michaelabon.streamdeck-inboxes.fastmail.action")
-
-	fastmailAction.RegisterHandler(streamdeck.WillAppear, func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-		p := streamdeck.WillAppearPayload{}
-		if err := json.Unmarshal(event.Payload, &p); err != nil {
-			return err
-		}
-		if err := json.Unmarshal(p.Settings, &fastmailStorage.Settings); err != nil {
-			return err
-		}
-		fastmailStorage.Ctx = ctx
-		fastmailStorage.Client = client
-
-		return fastmail.FetchAndUpdate(client, ctx, fastmailStorage.Settings)
-	})
-
-	fastmailAction.RegisterHandler(streamdeck.DidReceiveSettings, func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-		p := streamdeck.DidReceiveSettingsPayload{}
-		if err := json.Unmarshal(event.Payload, &p); err != nil {
-			return err
-		}
-		if err := json.Unmarshal(p.Settings, &fastmailStorage.Settings); err != nil {
-			return err
-		}
-
-		log.Println("[fastmail] New api token received", fastmailStorage.Settings.ApiToken)
-
-		fastmailStorage.Ctx = ctx
-		fastmailStorage.Client = client
-
-		return fastmail.FetchAndUpdate(client, ctx, fastmailStorage.Settings)
-	})
-
-	go func() {
-		for range time.Tick(gmail.RefreshInterval) {
-			if gmailStorage.Ctx == nil || gmailStorage.Client == nil {
-				return
-			}
-
-			_ = gmail.FetchAndUpdate(gmailStorage.Client, gmailStorage.Ctx, gmailStorage.Settings)
-		}
-	}()
-
-	go func() {
-		for range time.Tick(fastmail.RefreshInterval) {
-			if fastmailStorage.Ctx == nil || fastmailStorage.Client == nil {
-				return
-			}
-
-			_ = fastmail.FetchAndUpdate(fastmailStorage.Client, fastmailStorage.Ctx, fastmailStorage.Settings)
-		}
-	}()
+	}
 }
