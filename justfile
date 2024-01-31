@@ -20,6 +20,10 @@ link:
 link:
     mklink /D "%AppData%\Elgato\StreamDeck\Plugins\{{ PLUGIN }}" "{{ justfile_directory() }}/{{ PLUGIN }}"
 
+[macos]
+unlink:
+    unlink "$HOME/Library/Application Support/com.elgato.StreamDeck/Plugins/{{ PLUGIN }}"
+
 install:
     git submodule update --init --recursive
     cd ./go && go mod tidy
