@@ -1,28 +1,41 @@
-PLUGINS := "fastmail marvin ynab"
+# Not a UUID, I know. Blame Elgato.
+UUID := "ca.michaelabon.streamdeck-inboxes"
 
-default:
-    @just --list
+GO := "go"
+GOFLAGS := ""
+PLUGIN := UUID + ".sdPlugin"
+DISTRIBUTION_TOOL := "$HOME/.bin/DistributionTool"
+TARGET := "streamdeck-inboxes"
 
-install:
-    git submodule update --init --recursive
-    bun install
-
-lint:
-    bunx @biomejs/biome check --apply */*.sdPlugin/app.js
+build:
+    {{ GO }} build {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }} -C ./go .
 
 [macos]
 link:
-    for dir in {{ PLUGINS }}; do \
-      ln -s \
-        "{{ justfile_directory() }}/${dir}/ca.michaelabon.streamdeck-inboxes.${dir}.sdPlugin" \
-        "$HOME/Library/Application Support/com.elgato.StreamDeck/Plugins" ; \
-    done
+    ln -s \
+        "{{ justfile_directory() }}/{{ PLUGIN }}" \
+        "$HOME/Library/Application Support/com.elgato.StreamDeck/Plugins"
 
 [windows]
 link:
-    mklink /D "%AppData%\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin"   "{{ justfile_directory() }}/fastmail/ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin"
-    mklink /D "%AppData%\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin"   "{{ justfile_directory() }}/marvin/ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin"
-    mklink /D "%AppData%\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin"   "{{ justfile_directory() }}/ynab/ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin"
+    mklink /D "%AppData%\Elgato\StreamDeck\Plugins\{{ PLUGIN }}" "{{ justfile_directory() }}/{{ PLUGIN }}"
+
+[macos]
+unlink:
+    unlink "$HOME/Library/Application Support/com.elgato.StreamDeck/Plugins/{{ PLUGIN }}"
+
+install:
+    git submodule update --init --recursive
+    cd ./go && go mod tidy
+    go install mvdan.cc/gofumpt@latest
+    go install github.com/segmentio/golines@latest
+
+lint:
+    gofumpt -w ./go
+    golines -w ./go
+
+test:
+    go test -C go ./...
 
 [macos]
 debug:
@@ -31,3 +44,12 @@ debug:
 [windows]
 debug:
     start "" "http://localhost:23654/"
+
+start:
+    streamdeck restart {{ UUID }}
+restart: start
+
+## Package the plugin for distribution to Elgato
+package:
+    mkdir build
+    {{ DISTRIBUTION_TOOL }} -b -i {{ PLUGIN }} -o build/

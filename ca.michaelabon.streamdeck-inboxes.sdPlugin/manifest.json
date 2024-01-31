@@ -1,0 +1,110 @@
+{
+	"$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/elgato-stream-deck-plugin.json",
+	"Actions": [
+		{
+			"Icon": "icons/fastmail_action",
+			"Name": "Fastmail Inbox Action",
+			"States": [
+				{
+					"FontSize": "16",
+					"Image": "icons/fastmail_button_default",
+					"TitleAlignment": "top"
+				},
+				{
+					"FontSize": "16",
+					"Image": "icons/fastmail_button_gold",
+					"TitleAlignment": "top"
+				}
+			],
+			"UUID": "ca.michaelabon.streamdeck-inboxes.fastmail.action",
+			"DisableAutomaticStates": true,
+			"UserTitleEnabled": false,
+			"PropertyInspectorPath": "property_inspector/fastmail.html"
+		},
+		{
+			"Icon": "icons/gmail_action",
+			"Name": "Gmail Inbox Action",
+			"States": [
+				{
+					"FontSize": "16",
+					"Image": "icons/gmail_button_default",
+					"TitleAlignment": "top"
+				},
+				{
+					"FontSize": "16",
+					"Image": "icons/gmail_button_gold",
+					"TitleAlignment": "top"
+				}
+			],
+			"UUID": "ca.michaelabon.streamdeck-inboxes.gmail.action",
+			"DisableAutomaticStates": true,
+			"UserTitleEnabled": false,
+			"PropertyInspectorPath": "property_inspector/gmail.html"
+		},
+		{
+			"Icon": "icons_marvin_action",
+			"Name": "Marvin Inbox Action",
+			"States": [
+				{
+					"Image": "icons/marvin_button_default",
+					"TitleAlignment": "top",
+					"FontSize": "16"
+				},
+				{
+					"Image": "icons/marvin_button_gold",
+					"TitleAlignment": "top",
+					"FontSize": "16"
+				}
+			],
+			"UUID": "ca.michaelabon.streamdeck-inboxes.marvin.action",
+			"DisableAutomaticStates": true,
+			"PropertyInspectorPath": "property_inspector/marvin.html",
+			"UserTitleEnabled": false
+		},
+		{
+			"Icon": "icons/ynab_action",
+			"Name": "YNAB Unapproved Transactions Action",
+			"States": [
+				{
+					"FontSize": "16",
+					"Image": "icons/ynab_button_default",
+					"TitleAlignment": "top"
+				},
+				{
+					"FontSize": "16",
+					"Image": "icons/ynab_button_gold",
+					"TitleAlignment": "top"
+				}
+			],
+			"UUID": "ca.michaelabon.streamdeck-inboxes.ynab.action",
+			"DisableAutomaticStates": true,
+			"UserTitleEnabled": false,
+			"PropertyInspectorPath": "property_inspector/ynab.html"
+		}
+	],
+	"Author": "Michael Abon",
+	"Category": "Inboxes",
+	"CategoryIcon": "icons/category",
+	"CodePath": "streamdeck-inboxes",
+	"CodePathMac": "streamdeck-inboxes",
+	"CodePathWindows": "streamdeck-inboxes.exe",
+	"Description": "Show how many unread items you have",
+	"Icon": "icons/plugin",
+	"Name": "Unread Inbox",
+	"OS": [
+		{
+			"MinimumVersion": "10.11",
+			"Platform": "mac"
+		},
+		{
+			"MinimumVersion": "10",
+			"Platform": "windows"
+		}
+	],
+	"SDKVersion": 2,
+	"Software": {
+		"MinimumVersion": "5.0"
+	},
+	"URL": "https://github.com/michaelabon/streamdeck-inboxes",
+	"Version": "0.0.1"
+}
