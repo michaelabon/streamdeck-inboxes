@@ -22,15 +22,13 @@ link:
 
 install:
     git submodule update --init --recursive
-    cd && go mod tidy
+    cd ./go && go mod tidy
     go install mvdan.cc/gofumpt@latest
     go install github.com/segmentio/golines@latest
 
-# From https://github.com/bobheadxi/readable
 lint:
     gofumpt -w ./go
     golines -w ./go
-    readable fmt README.md
 
 test:
     go test -C go ./...

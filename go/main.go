@@ -1,13 +1,15 @@
 package main
 
 import (
-	"ca.michaelabon.inboxes/internal/display"
 	"context"
 	"fmt"
-	"github.com/samwho/streamdeck"
 	"log"
 	"os"
 	"strconv"
+
+	"ca.michaelabon.inboxes/internal/display"
+
+	"github.com/samwho/streamdeck"
 )
 
 func main() {

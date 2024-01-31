@@ -98,7 +98,11 @@ func getUnseenCount(settings *Settings) (uint, error) {
 	}
 	accountId, ok := sessionResponse.PrimaryAccounts["urn:ietf:params:jmap:mail"]
 	if !ok {
-		log.Println("[fastmail]", "error while retrieving primary account", sessionResponse.PrimaryAccounts)
+		log.Println(
+			"[fastmail]",
+			"error while retrieving primary account",
+			sessionResponse.PrimaryAccounts,
+		)
 		return 0, errors.New("error while retrieving primary account")
 	}
 	log.Println("[fastmail]", "successfully got accountId", accountId)

@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"golang.org/x/exp/slices"
 	"io"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"golang.org/x/exp/slices"
 )
 
 type Settings struct {
@@ -32,7 +33,10 @@ func FetchUnseenCountAndNextAccountId(settings *Settings) (uint, error) {
 }
 
 func getUnseenCount(settings *Settings) (uint, error) {
-	transactionsUrl := fmt.Sprintf("https://api.ynab.com/v1/budgets/%s/transactions?type=unapproved", settings.BudgetUuid)
+	transactionsUrl := fmt.Sprintf(
+		"https://api.ynab.com/v1/budgets/%s/transactions?type=unapproved",
+		settings.BudgetUuid,
+	)
 
 	rawTransactions, err := makeRequest(transactionsUrl, settings.PersonalAccessToken)
 	if err != nil {
@@ -73,7 +77,6 @@ func getUnseenCount(settings *Settings) (uint, error) {
 func makeRequest(url, bearer string) ([]byte, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
-
 	if err != nil {
 		log.Println("[ynab]", "error while newing request", err)
 		return nil, err

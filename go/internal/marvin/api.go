@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"golang.org/x/exp/slices"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"time"
+
+	"golang.org/x/exp/slices"
 )
 
 type Settings struct {
@@ -23,7 +24,6 @@ type Settings struct {
 const RefreshInterval = time.Minute
 
 func FetchUnseenCount(settings *Settings) (uint, error) {
-
 	if settings.Server == "" {
 		return 0, errors.New("missing Server")
 	}
@@ -90,7 +90,6 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 	marvinResponse := &response{}
 	err = json.Unmarshal(resBody, marvinResponse)
-
 	if err != nil {
 		log.Println("[marvin]", "error while unmarshalling session response", err)
 		return 0, err
