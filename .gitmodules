@@ -7,3 +7,6 @@
 [submodule "ynab/ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin/sdk"]
 	path = ynab/ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin/sdk
 	url = https://github.com/elgatosf/streamdeck-javascript-sdk
+[submodule "v2/ca.michaelabon.streamdeck-inboxes.sdPlugin/property_inspector/sdk"]
+	path = v2/ca.michaelabon.streamdeck-inboxes.sdPlugin/property_inspector/sdk
+	url = https://github.com/elgatosf/streamdeck-javascript-sdk

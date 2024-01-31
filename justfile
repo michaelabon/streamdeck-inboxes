@@ -4,6 +4,7 @@ default:
     @just --list
 
 install:
+    npm install -g @elgato/cli
     git submodule update --init --recursive
     bun install
 
@@ -31,3 +32,10 @@ debug:
 [windows]
 debug:
     start "" "http://localhost:23654/"
+
+
+buildgo:
+    go build -o ../ca.michaelabon.streamdeck-inboxes.sdPlugin/streamdeck-inboxes -C v2/go .
+
+start:
+    streamdeck restart ca.michaelabon.streamdeck-inboxes
