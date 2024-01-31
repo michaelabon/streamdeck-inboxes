@@ -6,6 +6,7 @@
     <mapping directory="$PROJECT_DIR$/fastmail/ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin/sdk" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/marvin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/marvin/ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin/sdk" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/v2/ca.michaelabon.streamdeck-inboxes.sdPlugin/property_inspector/sdk" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ynab" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ynab/ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin/sdk" vcs="Git" />
   </component>
