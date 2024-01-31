@@ -1,29 +1,39 @@
-PLUGINS := "fastmail marvin ynab"
+# Not a UUID, I know. Blame Elgato.
+UUID := "ca.michaelabon.streamdeck-inboxes"
 
-default:
-    @just --list
+GO := "go"
+GOFLAGS := ""
+PLUGIN := UUID + ".sdPlugin"
+DISTRIBUTION_TOOL := "$HOME/.bin/DistributionTool"
+TARGET := "streamdeck-inboxes"
 
-install:
-    npm install -g @elgato/cli
-    git submodule update --init --recursive
-    bun install
-
-lint:
-    bunx @biomejs/biome check --apply */*.sdPlugin/app.js
+build:
+    {{ GO }} build {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }} -C ./go .
 
 [macos]
 link:
-    for dir in {{ PLUGINS }}; do \
-      ln -s \
-        "{{ justfile_directory() }}/${dir}/ca.michaelabon.streamdeck-inboxes.${dir}.sdPlugin" \
-        "$HOME/Library/Application Support/com.elgato.StreamDeck/Plugins" ; \
-    done
+    ln -s \
+        "{{ justfile_directory() }}/{{ PLUGIN }}" \
+        "$HOME/Library/Application Support/com.elgato.StreamDeck/Plugins"
 
 [windows]
 link:
-    mklink /D "%AppData%\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin"   "{{ justfile_directory() }}/fastmail/ca.michaelabon.streamdeck-inboxes.fastmail.sdPlugin"
-    mklink /D "%AppData%\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin"   "{{ justfile_directory() }}/marvin/ca.michaelabon.streamdeck-inboxes.marvin.sdPlugin"
-    mklink /D "%AppData%\Elgato\StreamDeck\Plugins\ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin"   "{{ justfile_directory() }}/ynab/ca.michaelabon.streamdeck-inboxes.ynab.sdPlugin"
+    mklink /D "%AppData%\Elgato\StreamDeck\Plugins\{{ PLUGIN }}" "{{ justfile_directory() }}/{{ PLUGIN }}"
+
+install:
+    git submodule update --init --recursive
+    cd && go mod tidy
+    go install mvdan.cc/gofumpt@latest
+    go install github.com/segmentio/golines@latest
+
+# From https://github.com/bobheadxi/readable
+lint:
+    gofumpt -w ./go
+    golines -w ./go
+    readable fmt README.md
+
+test:
+    go test -C go ./...
 
 [macos]
 debug:
@@ -33,9 +43,11 @@ debug:
 debug:
     start "" "http://localhost:23654/"
 
-
-buildgo:
-    go build -o ../ca.michaelabon.streamdeck-inboxes.sdPlugin/streamdeck-inboxes -C v2/go .
-
 start:
-    streamdeck restart ca.michaelabon.streamdeck-inboxes
+    streamdeck restart {{ UUID }}
+restart: start
+
+## Package the plugin for distribution to Elgato
+package:
+    mkdir build
+    {{ DISTRIBUTION_TOOL }} -b -i {{ PLUGIN }} -o build/
