@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ca.michaelabon.inboxes/internal/gmail"
+	"ca.michaelabon.inboxes/internal/marvin"
 	"context"
 	"encoding/json"
 	"net/url"
@@ -11,10 +11,10 @@ import (
 	sdcontext "github.com/samwho/streamdeck/context"
 )
 
-func setupGmail(client *streamdeck.Client) {
-	storage := map[string]*gmail.Settings{}
+func setupMarvin(client *streamdeck.Client) {
+	storage := map[string]*marvin.Settings{}
 
-	action := client.Action("ca.michaelabon.streamdeck-inboxes.gmail.action")
+	action := client.Action("ca.michaelabon.streamdeck-inboxes.marvin.action")
 
 	action.RegisterHandler(streamdeck.WillAppear, func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
 		p := streamdeck.WillAppearPayload{}
@@ -22,14 +22,14 @@ func setupGmail(client *streamdeck.Client) {
 			return err
 		}
 
-		settings := &gmail.Settings{}
+		settings := &marvin.Settings{}
 		if err := json.Unmarshal(p.Settings, &settings); err != nil {
 			return err
 		}
 
 		storage[event.Context] = settings
 
-		err := setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
+		err := setTitle(ctx, client)(marvin.FetchUnseenCount(settings))
 		if err != nil {
 			return logEventError(event, err)
 		}
@@ -48,14 +48,14 @@ func setupGmail(client *streamdeck.Client) {
 			return err
 		}
 
-		settings := &gmail.Settings{}
+		settings := &marvin.Settings{}
 		if err := json.Unmarshal(p.Settings, &settings); err != nil {
 			return err
 		}
 
 		storage[event.Context] = settings
 
-		err := setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
+		err := setTitle(ctx, client)(marvin.FetchUnseenCount(settings))
 		if err != nil {
 			return logEventError(event, err)
 		}
@@ -67,23 +67,22 @@ func setupGmail(client *streamdeck.Client) {
 		if err := json.Unmarshal(event.Payload, &p); err != nil {
 			return err
 		}
-		settings := &gmail.Settings{}
+		settings := &marvin.Settings{}
 		if err := json.Unmarshal(p.Settings, &settings); err != nil {
 			return err
 		}
 
-		gmailUrl, err := url.Parse("https://mail.google.com/mail/u/")
+		marvinUrl, err := url.Parse("https://app.amazingmarvin.com")
 		if err != nil {
 			return err
 		}
 
-		gmailUrl.Query().Set("authuser", settings.Username)
-		err = client.OpenURL(ctx, *gmailUrl)
+		err = client.OpenURL(ctx, *marvinUrl)
 		if err != nil {
 			return logEventError(event, err)
 		}
 
-		err = setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
+		err = setTitle(ctx, client)(marvin.FetchUnseenCount(settings))
 		if err != nil {
 			return logEventError(event, err)
 		}
@@ -91,15 +90,15 @@ func setupGmail(client *streamdeck.Client) {
 	})
 
 	go func() {
-		for range time.Tick(gmail.RefreshInterval) {
+		for range time.Tick(marvin.RefreshInterval) {
 			for ctxStr, settings := range storage {
 				ctx := context.Background()
 				ctx = sdcontext.WithContext(ctx, ctxStr)
 
-				err := setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
+				err := setTitle(ctx, client)(marvin.FetchUnseenCount(settings))
 				if err != nil {
 					fakeEventForLogging := streamdeck.Event{
-						Action: "ca.michaelabon.streamdeck-inboxes.gmail.action",
+						Action: "ca.michaelabon.streamdeck-inboxes.marvin.action",
 						Event:  "tick",
 					}
 					_ = logEventError(fakeEventForLogging, err)
