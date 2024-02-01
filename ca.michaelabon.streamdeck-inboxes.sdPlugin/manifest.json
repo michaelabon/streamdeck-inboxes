@@ -3,7 +3,7 @@
 	"Actions": [
 		{
 			"Icon": "icons/fastmail_action",
-			"Name": "Fastmail Inbox Action",
+			"Name": "Fastmail Inbox",
 			"States": [
 				{
 					"FontSize": "16",
@@ -23,7 +23,7 @@
 		},
 		{
 			"Icon": "icons/gmail_action",
-			"Name": "Gmail Inbox Action",
+			"Name": "Gmail Inbox",
 			"States": [
 				{
 					"FontSize": "16",
@@ -43,7 +43,7 @@
 		},
 		{
 			"Icon": "icons_marvin_action",
-			"Name": "Marvin Inbox Action",
+			"Name": "Marvin Inbox",
 			"States": [
 				{
 					"Image": "icons/marvin_button_default",
@@ -63,7 +63,7 @@
 		},
 		{
 			"Icon": "icons/ynab_action",
-			"Name": "YNAB Unapproved Transactions Action",
+			"Name": "YNAB Unapproved Transactions",
 			"States": [
 				{
 					"FontSize": "16",
