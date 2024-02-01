@@ -42,7 +42,7 @@
 			"PropertyInspectorPath": "property_inspector/gmail.html"
 		},
 		{
-			"Icon": "icons_marvin_action",
+			"Icon": "icons/marvin_action",
 			"Name": "Marvin Inbox",
 			"States": [
 				{
