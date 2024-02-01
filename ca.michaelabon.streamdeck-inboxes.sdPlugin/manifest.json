@@ -62,6 +62,26 @@
 			"UserTitleEnabled": false
 		},
 		{
+			"Icon": "icons/todoist_action",
+			"Name": "Todoist Inbox",
+			"States": [
+				{
+					"Image": "icons/todoist_button_default",
+					"TitleAlignment": "top",
+					"FontSize": "16"
+				},
+				{
+					"Image": "icons/todoist_button_gold",
+					"TitleAlignment": "top",
+					"FontSize": "16"
+				}
+			],
+			"UUID": "ca.michaelabon.streamdeck-inboxes.todoist.action",
+			"DisableAutomaticStates": true,
+			"PropertyInspectorPath": "property_inspector/todoist.html",
+			"UserTitleEnabled": false
+		},
+		{
 			"Icon": "icons/ynab_action",
 			"Name": "YNAB Unapproved Transactions",
 			"States": [

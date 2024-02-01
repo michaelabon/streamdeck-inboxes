@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover" />
+    <title>ca.michaelabon.streamdeck-inboxes.todoist Property Inspector</title>
+    <link rel="stylesheet" href="sdk/css/sdpi.css" />
+</head>
+
+<body>
+<div class="sdpi-wrapper">
+    <form id="property-inspector">
+        <div class="sdpi-item">
+            <div data-localize class="sdpi-item-label" title="API Token">API Token</div>
+            <input data-localize class="sdpi-item-value" name="apiToken" type="password" />
+        </div>
+        <div class="sdpi-item">
+            <div class="sdpi-item-label empty"></div>
+            <div class="sdpi-item-value">
+                <a
+                        href="https://app.todoist.com/app/settings/integrations/developer"
+                        onclick="onGetSettingsClick('https://app.todoist.com/app/settings/integrations/developer'); return false;"
+                >Get your Todoist API Token.</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<!-- Stream Deck Libs -->
+<script src="sdk/js/constants.js"></script>
+<script src="sdk/js/prototypes.js"></script>
+<script src="sdk/js/timers.js"></script>
+<script src="sdk/js/utils.js"></script>
+<script src="sdk/js/events.js"></script>
+<script src="sdk/js/api.js"></script>
+<script src="sdk/js/property-inspector.js"></script>
+<script src="sdk/js/dynamic-styles.js"></script>
+
+<!-- Property Inspector Source -->
+<script src="todoist.js"></script>
+</body>
+</html>

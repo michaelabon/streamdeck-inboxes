@@ -48,6 +48,7 @@ func setup(client *streamdeck.Client) {
 	setupFastmail(client)
 	setupGmail(client)
 	setupMarvin(client)
+	setupTodoist(client)
 	setupYnab(client)
 }
 
