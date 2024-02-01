@@ -51,5 +51,5 @@ restart: start
 
 ## Package the plugin for distribution to Elgato
 package:
-    mkdir build
+    mkdir -p build
     {{ DISTRIBUTION_TOOL }} -b -i {{ PLUGIN }} -o build/
