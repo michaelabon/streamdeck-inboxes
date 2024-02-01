@@ -1,8 +1,72 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -30  150 150">
-<rect fill="#2b2b2b" x="0" y="-30" width="150" height="150" />
-<path fill="#4285f4" d="M58,108h14v-34l-20,-15v43c0,3.32,2.69,6,6,6"/>
-<path fill="#34a853" d="M120,108h14c3.32,0,6,-2.69,6,-6v-43l-20,15"/>
-<path fill="#fbbc04" d="M120,48v26l20,-15v-8c0,-7.42,-8.47,-11.65,-14.4,-7.2"/>
-<path fill="#ea4335" d="M72,74v-26l24,18l24,-18v26l-24,18"/>
-<path fill="#c5221f" d="M52,51v8l20,15v-26l-5.6,-4.2c-5.94,-4.45,-14.4,-0.22,-14.4,7.2"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 400 400"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="gmail_button_default.svg"
+   width="400"
+   height="400"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.0125"
+     inkscape:cx="160.24845"
+     inkscape:cy="240"
+     inkscape:window-width="1248"
+     inkscape:window-height="1387"
+     inkscape:window-x="79"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg5" />
+  <rect
+     fill="#2b2b2b"
+     x="0"
+     y="0"
+     width="400"
+     height="400"
+     id="rect1"
+     inkscape:label="background"
+     />
+  <path
+     fill="#4285f4"
+     d="M 99.555018,377.92464 H 147.24413 V 262.10823 L 79.116827,211.01275 v 146.4737 c 0,11.30913 9.163122,20.43819 20.438191,20.43819"
+     id="path1"
+     inkscape:label="left leg"
+      />
+  <path
+     fill="#34a853"
+     d="m 310.74965,377.92464 h 47.68912 c 11.30913,0 20.43819,-9.16312 20.43819,-20.43819 v -146.4737 l -68.12731,51.09548"
+     id="path2"
+     inkscape:label="right leg"
+      />
+  <path
+     fill="#fbbc04"
+     d="m 310.74965,173.54274 v 88.56549 l 68.12731,-51.09548 v -27.25092 c 0,-25.27523 -28.85192,-39.68415 -49.05166,-24.52583"
+     id="path3"
+     inkscape:label="right shoulder"
+      />
+  <path
+     fill="#ea4335"
+     d="m 147.24413,262.10823 v -88.56549 l 81.75276,61.31457 81.75276,-61.31457 v 88.56549 l -81.75276,61.31457"
+     id="path4"
+     inkscape:label="flap"
+     />
+  <path
+     fill="#c5221f"
+     d="m 79.116827,183.76183 v 27.25092 l 68.127303,51.09548 V 173.54274 L 128.16848,159.236 c -20.2338,-15.15832 -49.051653,-0.7494 -49.051653,24.52583"
+     id="path5"
+     inkscape:label="left shoulder"
+      />
 </svg>
