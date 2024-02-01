@@ -65,7 +65,13 @@ func getUnseenCount(settings *Settings) (uint, error) {
 	var projects []project
 	err = json.Unmarshal(projectsResponseBody, &projects)
 	if err != nil {
-		log.Println("[todoist]", "error while unmarshalling projects response", err, "\n", string(projectsResponseBody))
+		log.Println(
+			"[todoist]",
+			"error while unmarshalling projects response",
+			err,
+			"\n",
+			string(projectsResponseBody),
+		)
 		return 0, err
 	}
 
@@ -78,7 +84,10 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 	totalTasks := 0
 	for _, inboxProjectID := range inboxProjectIDs {
-		tasksUrl := fmt.Sprintf("https://api.todoist.com/rest/v2/tasks?project_id=%s", inboxProjectID)
+		tasksUrl := fmt.Sprintf(
+			"https://api.todoist.com/rest/v2/tasks?project_id=%s",
+			inboxProjectID,
+		)
 
 		tasksRequest, err := http.NewRequest("GET", tasksUrl, nil)
 		if err != nil {
@@ -104,7 +113,13 @@ func getUnseenCount(settings *Settings) (uint, error) {
 		var tasks []task
 		err = json.Unmarshal(tasksResponseBody, &tasks)
 		if err != nil {
-			log.Println("[todoist]", "error while unmarshalling tasks response", err, "\n", string(tasksResponseBody))
+			log.Println(
+				"[todoist]",
+				"error while unmarshalling tasks response",
+				err,
+				"\n",
+				string(tasksResponseBody),
+			)
 			_ = tasksResponse.Body.Close()
 			return 0, err
 		}
