@@ -1,15 +1,43 @@
+<?xml version="1.0"?>
 <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="400" height="400">
-
-
-  <path d="M82.303 400.085 34.97 385.52s-13.04-4.869-17.4-7.875c-4.205-2.898-9.441-8.975-9.695-12.193s-.254-8.213 4.318-11.516c4.572-3.302 12.362-1.354 12.362-1.354l67.486 14.055s-24.504-58.888-32.407-87.867c-7.903-28.978-11.017-31.852-5.03-53.407 5.988-21.554 15.328-29.458 28.5-38.558s52.45-36.404 102.265-60.832 92.444-37.6 110.167-42.63 43.109-12.214 65.621 2.395c22.513 14.61 40.235 48.378 40.235 48.378l-.958 266.317z" style="display:inline;fill:rgb(226, 226, 226);fill-opacity:1;stroke:#483d38;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"/>
-  <path d="M162.32 313.633s-3.98-15.496 13.463-24.048 26.503 5.42 26.503 5.42M306.266 243.861s-3.98-15.495 13.463-24.047 26.503 5.419 26.503 5.419" style="display:inline;fill:none;fill-opacity:1;stroke:#333331;stroke-width:5.5;stroke-dasharray:none;stroke-opacity:1"/>
-  <path d="M302.117 276.102a6.81 6.81 0 0 0-8.996-3.276l-52.45 23.967a6.805 6.805 0 0 0-3.874 7.422 36.23 37.128 0 0 0 14.867 12.619 48.5 48.5 0 0 1 41.357-23.453 48.5 48.5 0 0 1 7.987.666 36.23 37.128 0 0 0 1.78-10.904 36.23 37.128 0 0 0-.67-7.041" style="display:inline;fill:#353136;fill-opacity:1;stroke:none"/>
-  <path d="M301.008 294.047a48.5 48.5 0 0 0-7.987-.666 48.5 48.5 0 0 0-41.357 23.453 36.23 37.128 0 0 0 14.893 3.436 36.23 37.128 0 0 0 34.45-26.223" style="display:inline;fill:rgb(180, 180, 180);fill-opacity:1;stroke:none"/>
-  <path d="m401.176 194.533.217-60.416s-17.722-33.77-40.235-48.379c-11.975-7.77-24.738-9.297-36.754-8.34 4.506 3.138 11.533 8.507 16.516 15.047 7.664 10.06 21.913 27.421 40.953 64.303 8.426 16.322 14.374 27.933 19.303 37.785" style="display:inline;fill:url(#h);stroke-width:.8"/>
-  <g style="display:inline;fill:#fff">
-    <path d="M-400 0H0v400h-400z" style="display:inline;opacity:.15;mix-blend-mode:multiply;fill:url(#i);stroke:none;stroke-width:13.9187" transform="rotate(-90)"/>
-    <path d="M0-400h400V0H0z" style="opacity:.06;mix-blend-mode:screen;fill:url(#j);stroke:none;stroke-width:13.9187" transform="rotate(90)"/>
-  </g>
-</svg>
+    xmlns="http://www.w3.org/2000/svg"
+    width="400"
+    height="400"
+  >
+  <path
+      d="M82.303 400.085 34.97 385.52s-13.04-4.869-17.4-7.875c-4.205-2.898-9.441-8.975-9.695-12.193s-.254-8.213 4.318-11.516c4.572-3.302 12.362-1.354 12.362-1.354l67.486 14.055s-24.504-58.888-32.407-87.867c-7.903-28.978-11.017-31.852-5.03-53.407 5.988-21.554 15.328-29.458 28.5-38.558s52.45-36.404 102.265-60.832 92.444-37.6 110.167-42.63 43.109-12.214 65.621 2.395c22.513 14.61 40.235 48.378 40.235 48.378l-.958 266.317z"
+      style="display:inline;fill:rgb(226, 226, 226);fill-opacity:1;stroke:#483d38;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+  />
+  <path
+      d="M162.32 313.633s-3.98-15.496 13.463-24.048 26.503 5.42 26.503 5.42M306.266 243.861s-3.98-15.495 13.463-24.047 26.503 5.419 26.503 5.419"
+      style="display:inline;fill:none;fill-opacity:1;stroke:#333331;stroke-width:5.5;stroke-dasharray:none;stroke-opacity:1"
+  />
+  <path
+      d="M302.117 276.102a6.81 6.81 0 0 0-8.996-3.276l-52.45 23.967a6.805 6.805 0 0 0-3.874 7.422 36.23 37.128 0 0 0 14.867 12.619 48.5 48.5 0 0 1 41.357-23.453 48.5 48.5 0 0 1 7.987.666 36.23 37.128 0 0 0 1.78-10.904 36.23 37.128 0 0 0-.67-7.041"
+      style="display:inline;fill:#353136;fill-opacity:1;stroke:none"
+  />
+  <path
+      d="M301.008 294.047a48.5 48.5 0 0 0-7.987-.666 48.5 48.5 0 0 0-41.357 23.453 36.23 37.128 0 0 0 14.893 3.436 36.23 37.128 0 0 0 34.45-26.223"
+      style="display:inline;fill:rgb(180, 180, 180);fill-opacity:1;stroke:none"
+  />
+  <path
+      d="m401.176 194.533.217-60.416s-17.722-33.77-40.235-48.379c-11.975-7.77-24.738-9.297-36.754-8.34 4.506 3.138 11.533 8.507 16.516 15.047 7.664 10.06 21.913 27.421 40.953 64.303 8.426 16.322 14.374 27.933 19.303 37.785"
+      style="display:inline;fill:url(#h);stroke-width:.8"
+  />
+  <g
+      style="display:inline;fill:#fff"
+    >
+    <path
+        d="M-400 0H0v400h-400z"
+        style="display:inline;opacity:.15;mix-blend-mode:multiply;fill:url(#i);stroke:none;stroke-width:13.9187"
+        transform="rotate(-90)"
+    />
+    <path
+        d="M0-400h400V0H0z"
+        style="opacity:.06;mix-blend-mode:screen;fill:url(#j);stroke:none;stroke-width:13.9187"
+        transform="rotate(90)"
+    />
+  </g
+  >
+</svg
+>

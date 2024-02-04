@@ -30,6 +30,13 @@ install:
     go install mvdan.cc/gofumpt@latest
     go install github.com/segmentio/golines@latest
 
+[macos]
+lint:
+    gofumpt -w ./go
+    golines -w ./go
+    find ./go ./{{ PLUGIN }}/icons -type f -name '*.svg' -exec xmllint --pretty 2 --output '{}' '{}' \;
+
+[windows]
 lint:
     gofumpt -w ./go
     golines -w ./go

@@ -1,26 +1,42 @@
+<?xml version="1.0"?>
 <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xml:space="preserve" width="400"
-        height="400" viewBox="-20 -20 440 440">
+    xmlns="http://www.w3.org/2000/svg"
+    xml:space="preserve"
+    width="400"
+    height="400"
+    viewBox="-20 -20 440 440"
+  >
+    <defs
+    >
+        <clipPath
+        id="base"
+      >
+            <rect
+          x="0"
+          y="50"
+          height="300"
+          width="400"
+          rx="20"
+      />
+        </clipPath
+    >
+    </defs
+  >
 
-        <defs>
-                <clipPath id="base">
-                <rect  x="0" y="50" height="300" width="400" rx="20" />
-                </clipPath>
-        </defs>
-
-        <rect x="0" y="50" height="300" width="400" rx="20" fill="rgb(226, 226, 226)" />
-
-        <path d="
-                M 0 50
-                l 200 150
-                L 400 50
-        "
-        stroke-width="10"
-              fill="none"
-              clip-path="url(#base)"
-
-              stroke="black"
-        />
-
-</svg>
+    <rect
+      x="0"
+      y="50"
+      height="300"
+      width="400"
+      rx="20"
+      fill="rgb(226, 226, 226)"
+  />
+    <path
+      d=" M 0 50 l 200 150 L 400 50"
+      stroke-width="10"
+      fill="none"
+      clip-path="url(#base)"
+      stroke="black"
+  />
+</svg
+>
