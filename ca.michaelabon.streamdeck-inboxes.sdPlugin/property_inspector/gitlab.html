@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover" />
+    <title>ca.michaelabon.streamdeck-inboxes.gitlab Property Inspector</title>
+    <link rel="stylesheet" href="sdk/css/sdpi.css" />
+</head>
+
+<body>
+<div class="sdpi-wrapper">
+    <form id="property-inspector">
+
+        <div class="sdpi-item">
+            <div data-localize class="sdpi-item-label" title="Fastmail API Token">GitLab Server</div>
+            <input data-localize class="sdpi-item-value" name="server" id="serverInput" type="text" placeholder="https://gitlab.1password.io/"  />
+        </div>
+
+        <div class="sdpi-item">
+            <div data-localize class="sdpi-item-label" title="Fastmail API Token">Personal Access Token</div>
+            <input data-localize class="sdpi-item-value" name="personalAccessToken" type="password" placeholder="hunter2"  />
+        </div>
+
+
+    </form>
+
+</div>
+
+<!-- Stream Deck Libs -->
+<script src="sdk/js/constants.js"></script>
+<script src="sdk/js/prototypes.js"></script>
+<script src="sdk/js/timers.js"></script>
+<script src="sdk/js/utils.js"></script>
+<script src="sdk/js/events.js"></script>
+<script src="sdk/js/api.js"></script>
+<script src="sdk/js/property-inspector.js"></script>
+<script src="sdk/js/dynamic-styles.js"></script>
+
+<!-- Property Inspector Source -->
+<script src="gitlab.js"></script>
+</body>
+
+</html>

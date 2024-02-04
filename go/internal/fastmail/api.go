@@ -17,7 +17,7 @@ type Settings struct {
 	ApiToken string
 }
 
-func FetchUnseenCount(settings *Settings) (uint, error) {
+func FetchUnseenCount(settings Settings) (uint, error) {
 	if settings.ApiToken == "" {
 		return 0, errors.New("missing ApiToken")
 	}
@@ -82,7 +82,7 @@ func makePostRequest(url string, bearer string, body io.Reader) ([]byte, error) 
 	return makeRequest(url, "POST", bearer, body)
 }
 
-func getUnseenCount(settings *Settings) (uint, error) {
+func getUnseenCount(settings Settings) (uint, error) {
 	sessionUrl := "https://api.fastmail.com/jmap/session"
 	rawSessionResponse, err := makeGetRequest(sessionUrl, settings.ApiToken)
 	if err != nil {

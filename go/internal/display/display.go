@@ -13,3 +13,7 @@ func PadRight(val string) string {
 	}
 	return fmt.Sprintf("%-7s", val)
 }
+
+func EncodeSVG(svg string) string {
+	return fmt.Sprintf("data:image/svg+xml;charset=utf8,%s", svg)
+}

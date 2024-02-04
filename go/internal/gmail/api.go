@@ -14,7 +14,7 @@ type Settings struct {
 	Password string
 }
 
-func FetchUnseenCount(settings *Settings) (uint, error) {
+func FetchUnseenCount(settings Settings) (uint, error) {
 	if settings.Username == "" {
 		return 0, errors.New("missing Username")
 	}
@@ -25,7 +25,7 @@ func FetchUnseenCount(settings *Settings) (uint, error) {
 	return getUnseenCount(settings)
 }
 
-func getUnseenCount(settings *Settings) (uint, error) {
+func getUnseenCount(settings Settings) (uint, error) {
 	username := settings.Username
 	password := settings.Password
 

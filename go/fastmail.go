@@ -15,7 +15,7 @@ import (
 func setupFastmail(client *streamdeck.Client) {
 	const uuid = "ca.michaelabon.streamdeck-inboxes.fastmail.action"
 
-	storage := map[string]*fastmail.Settings{}
+	storage := map[string]fastmail.Settings{}
 
 	action := client.Action(uuid)
 
@@ -27,7 +27,7 @@ func setupFastmail(client *streamdeck.Client) {
 				return err
 			}
 
-			settings := &fastmail.Settings{}
+			settings := fastmail.Settings{}
 			if err := json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}
@@ -59,7 +59,7 @@ func setupFastmail(client *streamdeck.Client) {
 				return err
 			}
 
-			settings := &fastmail.Settings{}
+			settings := fastmail.Settings{}
 			if err := json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}
@@ -79,7 +79,7 @@ func setupFastmail(client *streamdeck.Client) {
 			if err := json.Unmarshal(event.Payload, &p); err != nil {
 				return err
 			}
-			settings := &fastmail.Settings{}
+			settings := fastmail.Settings{}
 			if err := json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}

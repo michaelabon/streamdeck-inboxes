@@ -46,6 +46,7 @@ func run(ctx context.Context) error {
 
 func setup(client *streamdeck.Client) {
 	setupFastmail(client)
+	setupGitLab(client)
 	setupGmail(client)
 	setupMarvin(client)
 	setupTodoist(client)

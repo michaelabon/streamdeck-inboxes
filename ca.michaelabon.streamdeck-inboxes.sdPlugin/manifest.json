@@ -42,6 +42,21 @@
 			"PropertyInspectorPath": "property_inspector/gmail.html"
 		},
 		{
+			"Icon": "icons/gitlab_action",
+			"Name": "GitLab",
+			"States": [
+				{
+					"FontSize": "16",
+					"Image": "icons/gitlab_button_default",
+					"TitleAlignment": "top"
+				}
+			],
+			"UUID": "ca.michaelabon.streamdeck-inboxes.gitlab.action",
+			"DisableAutomaticStates": true,
+			"UserTitleEnabled": false,
+			"PropertyInspectorPath": "property_inspector/gitlab.html"
+		},
+		{
 			"Icon": "icons/marvin_action",
 			"Name": "Marvin Inbox",
 			"States": [

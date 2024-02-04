@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="400" height="400" viewBox="0 0 400 400">
+  <style type="text/css">
+        .issues {
+        fill: #91d4a8;
+        }
+
+        .mr {
+        fill: #e9be74;
+        }
+
+        .todo {
+        fill: #9dc7f1;
+        }
+
+        .icon {
+        width: 80px;
+        }
+
+        text {
+        font-size: 72px;
+        font-family: Inter, sans-serif;
+        text-anchor: end;
+        }
+    </style>
+  <rect id="base" fill="rgb(252, 161, 33)" x="0" y="0" width="400" height="400"/>
+  <g id="backgrounds">
+    <rect fill="#0d532a" x="0" width="400" y="25" height="90"/>
+    <rect fill="#703800" x="0" width="400" y="115" height="180"/>
+    <rect fill="#064787" x="0" width="400" y="295" height="180"/>
+  </g>
+  <g id="icons" transform="translate(20, 20)">
+    <g transform="scale(5) translate(0, 2)" class="issues">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M3 2.5h6a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5zM1 3a2 2 0 0 1 2-2h6a2 2 0 0 1 1.97 1.658l2.913 1.516a1.75 1.75 0 0 1 .744 2.36l-3.878 7.45a.753.753 0 0 1-.098.145c-.36.526-.965.871-1.651.871H3a2 2 0 0 1-2-2V3zm10 7.254l2.297-4.413a.25.25 0 0 0-.106-.337L11 4.364v5.89z"/>
+    </g>
+    <g class="mr">
+      <g transform="scale(5) translate(0, 20)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.34 1.22a.75.75 0 0 0-1.06 0L7.53 2.97 7 3.5l.53.53 1.75 1.75a.75.75 0 1 0 1.06-1.06l-.47-.47h.63c.69 0 1.25.56 1.25 1.25v4.614a2.501 2.501 0 1 0 1.5 0V5.5a2.75 2.75 0 0 0-2.75-2.75h-.63l.47-.47a.75.75 0 0 0 0-1.06zM13.5 12.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm1.5 0a2.5 2.5 0 1 1-3.25-2.386V5.886a2.501 2.501 0 1 1 1.5 0v4.228A2.501 2.501 0 0 1 6 12.5zm-1.5-9a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+      </g>
+      <g transform="scale(5) translate(17, 20)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zm.514 2.63a4 4 0 1 0-6.028 0A4.002 4.002 0 0 0 2 11.5V13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1.5a4.002 4.002 0 0 0-2.986-3.87zM8 9H6a2.5 2.5 0 0 0-2.5 2.5V13a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-1.5A2.5 2.5 0 0 0 10 9H8z"/>
+      </g>
+      <g transform="scale(5) translate(0, 38)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.34 1.22a.75.75 0 0 0-1.06 0L7.53 2.97 7 3.5l.53.53 1.75 1.75a.75.75 0 1 0 1.06-1.06l-.47-.47h.63c.69 0 1.25.56 1.25 1.25v4.614a2.501 2.501 0 1 0 1.5 0V5.5a2.75 2.75 0 0 0-2.75-2.75h-.63l.47-.47a.75.75 0 0 0 0-1.06zM13.5 12.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm1.5 0a2.5 2.5 0 1 1-3.25-2.386V5.886a2.501 2.501 0 1 1 1.5 0v4.228A2.501 2.501 0 0 1 6 12.5zm-1.5-9a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+      </g>
+      <g transform="scale(5) translate(17, 37)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM8 0a2.5 2.5 0 0 1 2.45 2H13a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h2.55A2.5 2.5 0 0 1 8 0zM7 5h3.5V3.5h2v11h-9v-11h2V5H7zm3.53 3.28a.75.75 0 1 0-1.06-1.06L7.5 9.19l-.47-.47a.75.75 0 0 0-1.06 1.06l1 1a.75.75 0 0 0 1.06 0l2.5-2.5z"/>
+      </g>
+    </g>
+    <g transform="scale(5) translate(0,57)" class="todo">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M3 13.5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5h9.25a.75.75 0 0 0 0-1.5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.75a.75.75 0 0 0-1.5 0V13a.5.5 0 0 1-.5.5H3zm12.78-8.82a.75.75 0 0 0-1.06-1.06L9.162 9.177 7.289 7.241a.75.75 0 1 0-1.078 1.043l2.403 2.484a.75.75 0 0 0 1.07.01L15.78 4.68z"/>
+    </g>
+  </g>
+  <text x="360" y="94" class="issues">%d</text>
+  <text x="360" y="184" class="mr">%d</text>
+  <text x="360" y="274" class="mr">%d</text>
+  <text x="360" y="364" class="todo">%d</text>
+</svg>

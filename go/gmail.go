@@ -13,7 +13,7 @@ import (
 )
 
 func setupGmail(client *streamdeck.Client) {
-	storage := map[string]*gmail.Settings{}
+	storage := map[string]gmail.Settings{}
 
 	action := client.Action("ca.michaelabon.streamdeck-inboxes.gmail.action")
 
@@ -25,7 +25,7 @@ func setupGmail(client *streamdeck.Client) {
 				return err
 			}
 
-			settings := &gmail.Settings{}
+			settings := gmail.Settings{}
 			if err := json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}
@@ -57,7 +57,7 @@ func setupGmail(client *streamdeck.Client) {
 				return err
 			}
 
-			settings := &gmail.Settings{}
+			settings := gmail.Settings{}
 			if err := json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}
@@ -79,7 +79,7 @@ func setupGmail(client *streamdeck.Client) {
 			if err := json.Unmarshal(event.Payload, &p); err != nil {
 				return err
 			}
-			settings := &gmail.Settings{}
+			settings := gmail.Settings{}
 			if err := json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}
