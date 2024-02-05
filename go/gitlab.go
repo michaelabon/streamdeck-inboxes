@@ -23,9 +23,12 @@ func setupGitLab(client *streamdeck.Client) {
 
 	action := client.Action(uuid)
 
+	results := gitlab.Result{}
+
 	action.RegisterHandler(
 		streamdeck.WillAppear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
+			var err error
 			p := streamdeck.WillAppearPayload{}
 			if err := json.Unmarshal(event.Payload, &p); err != nil {
 				return err
@@ -38,7 +41,8 @@ func setupGitLab(client *streamdeck.Client) {
 
 			storage[event.Context] = settings
 
-			err := setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(*settings))
+			results, err = gitlab.FetchUnseenCount(settings)
+			err = setGitLabImage(ctx, client)(results, err)
 			if err != nil {
 				return logEventError(event, err)
 			}
@@ -58,17 +62,19 @@ func setupGitLab(client *streamdeck.Client) {
 	action.RegisterHandler(
 		streamdeck.DidReceiveSettings,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
+			var err error
 			p := streamdeck.DidReceiveSettingsPayload{}
-			if err := json.Unmarshal(event.Payload, &p); err != nil {
+			if err = json.Unmarshal(event.Payload, &p); err != nil {
 				return err
 			}
 
-			settings := gitlab.Settings{}
-			if err := json.Unmarshal(p.Settings, &settings); err != nil {
+			settings := &gitlab.Settings{}
+			if err = json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}
 
-			err := setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(settings))
+			results, err = gitlab.FetchUnseenCount(settings)
+			err = setGitLabImage(ctx, client)(results, err)
 			if err != nil {
 				return logEventError(event, err)
 			}
@@ -79,18 +85,31 @@ func setupGitLab(client *streamdeck.Client) {
 	action.RegisterHandler(
 		streamdeck.KeyUp,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
+			var err error
 			p := streamdeck.DidReceiveSettingsPayload{}
-			if err := json.Unmarshal(event.Payload, &p); err != nil {
+			if err = json.Unmarshal(event.Payload, &p); err != nil {
 				return err
 			}
-			settings := gitlab.Settings{}
-			if err := json.Unmarshal(p.Settings, &settings); err != nil {
+			settings := &gitlab.Settings{}
+			if err = json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}
 
-			gitlabUrl, err := url.Parse("https://app.gitlab.com/mail/Inbox") //?u=a56140cf
+			gitlabUrl, err := url.Parse(settings.Server)
 			if err != nil {
 				return err
+			}
+
+			if results.ToDos > 0 {
+				gitlabUrl = gitlabUrl.JoinPath("/dashboard/todos")
+			} else if results.ReviewMRs > 0 {
+				gitlabUrl = gitlabUrl.JoinPath(fmt.Sprintf("/dashboard/merge_requests?reviewer_username=%s", settings.Username))
+			} else if results.AssignedMRs > 0 {
+				gitlabUrl = gitlabUrl.JoinPath(fmt.Sprintf("/dashboard/merge_requests?assignee_username=%s", settings.Username))
+			} else if results.AssignedIssues > 0 {
+				gitlabUrl = gitlabUrl.JoinPath(fmt.Sprintf("/dashboard/issues?state=opened&assignee_username[]=%s", settings.Username))
+			} else {
+				gitlabUrl = gitlabUrl.JoinPath("/dashboard/projects/starred")
 			}
 
 			err = client.OpenURL(ctx, *gitlabUrl)
@@ -98,7 +117,8 @@ func setupGitLab(client *streamdeck.Client) {
 				return logEventError(event, err)
 			}
 
-			err = setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(settings))
+			results, err = gitlab.FetchUnseenCount(settings)
+			err = setGitLabImage(ctx, client)(results, err)
 			if err != nil {
 				return logEventError(event, err)
 			}
@@ -113,7 +133,7 @@ func setupGitLab(client *streamdeck.Client) {
 				ctx := context.Background()
 				ctx = sdcontext.WithContext(ctx, ctxStr)
 
-				err := setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(*settings))
+				err := setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(settings))
 				if err != nil {
 					fakeEventForLogging := streamdeck.Event{
 						Action: uuid,

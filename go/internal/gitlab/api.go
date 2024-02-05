@@ -20,9 +20,11 @@ type Result struct {
 type Settings struct {
 	PersonalAccessToken string `json:"personalAccessToken"`
 	Server              string `json:"server"`
+	Username            string `json:"-"`
+	UserID              int    `json:"-"`
 }
 
-func FetchUnseenCount(settings Settings) (Result, error) {
+func FetchUnseenCount(settings *Settings) (Result, error) {
 	if settings.PersonalAccessToken == "" {
 		return Result{}, errors.New("missing PersonalAccessToken")
 	}
@@ -33,36 +35,38 @@ func FetchUnseenCount(settings Settings) (Result, error) {
 	return getUnreadCounts(settings)
 }
 
-func getUnreadCounts(settings Settings) (Result, error) {
+func getUnreadCounts(settings *Settings) (Result, error) {
 	git, err := gitlab.NewClient(settings.PersonalAccessToken, gitlab.WithBaseURL(settings.Server))
 	if err != nil {
 		log.Println("[gitlab]", "error while getting session", err)
 		return Result{}, err
 	}
 
-	user, _, err := git.Users.CurrentUser()
-	if err != nil {
-		log.Println("[gitlab]", "error while getting current user", err)
-		return Result{}, err
+	if settings.UserID == 0 || settings.Username == "" {
+		user, _, err := git.Users.CurrentUser()
+		if err != nil {
+			log.Println("[gitlab]", "error while getting current user", err)
+			return Result{}, err
+		}
+		settings.Username = user.Username
+		settings.UserID = user.ID
 	}
 
-	var result Result
-	{
-	}
+	result := Result{}
 
-	assignedIssues, err := getAssignedIssues(git, user.Username)
+	assignedIssues, err := getAssignedIssues(git, settings.Username)
 	if err != nil {
 		return Result{}, err
 	}
 	result.AssignedIssues = assignedIssues
 
-	assignedMRs, err := getAssignedMRs(git, gitlab.AssigneeID(user.ID))
+	assignedMRs, err := getAssignedMRs(git, gitlab.AssigneeID(settings.UserID))
 	if err != nil {
 		return Result{}, err
 	}
 	result.AssignedMRs = assignedMRs
 
-	reviewMRs, err := getReviewMRs(git, gitlab.ReviewerID(user.ID))
+	reviewMRs, err := getReviewMRs(git, gitlab.ReviewerID(settings.UserID))
 	if err != nil {
 		return Result{}, err
 	}
