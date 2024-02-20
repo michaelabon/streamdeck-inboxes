@@ -7,8 +7,47 @@ PLUGIN := UUID + ".sdPlugin"
 DISTRIBUTION_TOOL := "$HOME/.bin/DistributionTool"
 TARGET := "streamdeck-inboxes"
 
+## BUILD
+
+[macos]
 build:
-    {{ GO }} build {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }} -C ./go .
+    GOOS=windows GOARCH=amd64 {{ GO }} build -C go {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }}.exe .
+    GOOS=darwin  GOARCH=amd64 {{ GO }} build -C go {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }}     .
+
+# WSL support
+[linux]
+build:
+    CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 GOOS=windows GOARCH=amd64 {{ GO }} build -C go {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }}.exe .
+    touch {{ PLUGIN }}/{{ TARGET }} # Stream Deck complains about a missing Mac binary while on Windows. (Why??)
+
+clean:
+    rm {{ PLUGIN }}/{{ TARGET }}
+    rm {{ PLUGIN }}/{{ TARGET }}.exe
+    rm {{ PLUGIN }}/logs/*
+
+
+## INSTALL
+
+
+[windows]
+install: _install-submodules _install-go-tools
+
+[macos]
+install: _install-submodules _install-go-tools
+
+[linux] ## WSL support
+install: install-go-tools
+    sudo apt install gcc-mingw-w64
+
+_install-submodules:
+    git submodule update --init --recursive
+    cd ./go && go mod tidy
+
+_install-go-tools:
+    go install github.com/daixiang0/gci@latest
+    go install mvdan.cc/gofumpt@latest
+    go install github.com/segmentio/golines@latest
+
 
 [macos]
 link:
