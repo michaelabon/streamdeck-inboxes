@@ -7,7 +7,9 @@ PLUGIN := UUID + ".sdPlugin"
 DISTRIBUTION_TOOL := "$HOME/.bin/DistributionTool"
 TARGET := "streamdeck-inboxes"
 
+
 ## BUILD
+
 
 [macos]
 build:
