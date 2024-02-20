@@ -14,8 +14,7 @@ build:
     GOOS=windows GOARCH=amd64 {{ GO }} build -C go {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }}.exe .
     GOOS=darwin  GOARCH=amd64 {{ GO }} build -C go {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }}     .
 
-# WSL support
-[linux]
+[linux] # WSL support
 build:
     CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 GOOS=windows GOARCH=amd64 {{ GO }} build -C go {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }}.exe .
     touch {{ PLUGIN }}/{{ TARGET }} # Stream Deck complains about a missing Mac binary while on Windows. (Why??)
@@ -26,7 +25,7 @@ clean:
     rm {{ PLUGIN }}/logs/*
 
 
-## INSTALL
+## INSTALL DEV DEPENDENCIES
 
 
 [windows]
@@ -49,6 +48,11 @@ _install-go-tools:
     go install github.com/segmentio/golines@latest
 
 
+## LINK
+## You only need to do this one time.
+## It connects your output directory to your Stream Deck
+
+
 [macos]
 link:
     ln -s \
@@ -69,6 +73,12 @@ install:
     go install mvdan.cc/gofumpt@latest
     go install github.com/segmentio/golines@latest
 
+
+
+## LINT
+## Ensure that all the files are formatted correctly.
+
+
 [macos]
 lint:
     gofumpt -w ./go
@@ -83,6 +93,11 @@ lint:
 test:
     go test -C go ./...
 
+
+
+## DEBUG & RESTART
+## Useful for local development
+
 [macos]
 debug:
     open "http://localhost:23654/"
@@ -94,6 +109,10 @@ debug:
 start:
     npx streamdeck restart {{ UUID }}
 restart: start
+
+
+## PACKAGE
+
 
 ## Package the plugin for distribution to Elgato
 package:
