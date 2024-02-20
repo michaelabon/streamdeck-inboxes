@@ -74,6 +74,13 @@ install:
     go install github.com/segmentio/golines@latest
 
 
+## TEST
+## Run unit tests
+
+
+test:
+    go test -C go ./...
+
 
 ## LINT
 ## Ensure that all the files are formatted correctly.
@@ -81,18 +88,16 @@ install:
 
 [macos]
 lint:
+    cd go && gci write .
     gofumpt -w ./go
     golines -w ./go
     find ./go ./{{ PLUGIN }}/icons -type f -name '*.svg' -exec xmllint --pretty 2 --output '{}' '{}' \;
 
 [windows]
 lint:
+    cd go && gci write .
     gofumpt -w ./go
     golines -w ./go
-
-test:
-    go test -C go ./...
-
 
 
 ## DEBUG & RESTART
