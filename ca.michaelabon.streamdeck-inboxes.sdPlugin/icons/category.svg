@@ -1,29 +1,28 @@
 <?xml version="1.0"?>
 <svg
     xmlns="http://www.w3.org/2000/svg"
-    xml:space="preserve"
     width="400"
     height="400"
     viewBox="-20 -20 440 440"
   >
-    <defs
+  <defs
     >
-        <clipPath
+    <clipPath
         id="base"
       >
-            <rect
+      <rect
           x="0"
           y="50"
           height="300"
           width="400"
           rx="20"
       />
-        </clipPath
+    </clipPath
     >
-    </defs
+  </defs
   >
 
-    <rect
+  <rect
       x="0"
       y="50"
       height="300"
@@ -31,8 +30,8 @@
       rx="20"
       fill="rgb(226, 226, 226)"
   />
-    <path
-      d=" M 0 50 l 200 150 L 400 50"
+  <path
+      d="M0,50l200,150l200,-150"
       stroke-width="10"
       fill="none"
       clip-path="url(#base)"
