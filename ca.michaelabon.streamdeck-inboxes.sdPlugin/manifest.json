@@ -1,17 +1,17 @@
 {
-	"$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/elgato-stream-deck-plugin.json",
+	"$schema": "https://cdn.jsdelivr.net/npm/@elgato/schemas@latest/streamdeck/plugins/manifest.json",
 	"Actions": [
 		{
 			"Icon": "icons/fastmail_action",
 			"Name": "Fastmail Inbox",
 			"States": [
 				{
-					"FontSize": "16",
+					"FontSize": 16,
 					"Image": "icons/fastmail_button_default",
 					"TitleAlignment": "top"
 				},
 				{
-					"FontSize": "16",
+					"FontSize": 16,
 					"Image": "icons/fastmail_button_gold",
 					"TitleAlignment": "top"
 				}
@@ -26,12 +26,12 @@
 			"Name": "Gmail Inbox",
 			"States": [
 				{
-					"FontSize": "16",
+					"FontSize": 16,
 					"Image": "icons/gmail_button_default",
 					"TitleAlignment": "top"
 				},
 				{
-					"FontSize": "16",
+					"FontSize": 16,
 					"Image": "icons/gmail_button_gold",
 					"TitleAlignment": "top"
 				}
@@ -46,7 +46,7 @@
 			"Name": "GitLab",
 			"States": [
 				{
-					"FontSize": "16",
+					"FontSize": 16,
 					"Image": "icons/gitlab_button_default",
 					"TitleAlignment": "top"
 				}
@@ -63,12 +63,12 @@
 				{
 					"Image": "icons/marvin_button_default",
 					"TitleAlignment": "top",
-					"FontSize": "16"
+					"FontSize": 16
 				},
 				{
 					"Image": "icons/marvin_button_gold",
 					"TitleAlignment": "top",
-					"FontSize": "16"
+					"FontSize": 16
 				}
 			],
 			"UUID": "ca.michaelabon.streamdeck-inboxes.marvin.action",
@@ -83,12 +83,12 @@
 				{
 					"Image": "icons/todoist_button_default",
 					"TitleAlignment": "top",
-					"FontSize": "16"
+					"FontSize": 16
 				},
 				{
 					"Image": "icons/todoist_button_gold",
 					"TitleAlignment": "top",
-					"FontSize": "16"
+					"FontSize": 16
 				}
 			],
 			"UUID": "ca.michaelabon.streamdeck-inboxes.todoist.action",
@@ -101,12 +101,12 @@
 			"Name": "YNAB Unapproved Transactions",
 			"States": [
 				{
-					"FontSize": "16",
+					"FontSize": 16,
 					"Image": "icons/ynab_button_default",
 					"TitleAlignment": "top"
 				},
 				{
-					"FontSize": "16",
+					"FontSize": 16,
 					"Image": "icons/ynab_button_gold",
 					"TitleAlignment": "top"
 				}
@@ -120,9 +120,7 @@
 	"Author": "Michael Abon",
 	"Category": "Inboxes",
 	"CategoryIcon": "icons/category",
-	"CodePath": "streamdeck-inboxes",
-	"CodePathMac": "streamdeck-inboxes",
-	"CodePathWindows": "streamdeck-inboxes.exe",
+	"CodePath": "streamdeck-inboxes.exe",
 	"Description": "Show how many unread items you have",
 	"Icon": "icons/plugin",
 	"Name": "Unread Inbox",
@@ -138,8 +136,8 @@
 	],
 	"SDKVersion": 2,
 	"Software": {
-		"MinimumVersion": "5.0"
+		"MinimumVersion": "6.4"
 	},
 	"URL": "https://github.com/michaelabon/streamdeck-inboxes",
-	"Version": "0.0.1"
+	"Version": "0.0.2"
 }
