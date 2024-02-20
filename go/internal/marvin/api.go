@@ -48,10 +48,50 @@ type response struct {
 
 type task struct {
 	Title     string
-	DB        string `json:"db"`
-	ParentID  string `json:"parentId"`
+	DB        string
 	Done      bool
 	Recurring bool
+
+	// sometimes this comes as:
+	//   a string of a UUID,
+	//   a string of "unassigned",
+	//   a literal null value,
+	//   an object of the form { "op": string, "val": string }
+	// It is this latter form that requires the custom unmarshalling.
+	ParentID parentId
+}
+
+type parentId struct {
+	string
+}
+
+func (p *parentId) UnmarshalJSON(data []byte) error {
+	var err error
+	if string(data) == "null" || string(data) == `""` {
+		return nil
+	}
+
+	var s string
+	err = json.Unmarshal(data, &s)
+
+	if err == nil {
+		p.string = s
+		return nil
+	}
+
+	type mixedObject struct {
+		Val string
+	}
+
+	var m mixedObject
+	err = json.Unmarshal(data, &m)
+
+	if err == nil {
+		p.string = m.Val
+		return nil
+	}
+
+	return err
 }
 
 func getUnseenCount(settings *Settings) (uint, error) {
@@ -63,7 +103,11 @@ func getUnseenCount(settings *Settings) (uint, error) {
 		return 0, err
 	}
 	marvinUrl = marvinUrl.JoinPath(settings.Database, "_all_docs")
-	marvinUrl.Query().Add("include_docs", "true")
+	query := marvinUrl.Query()
+	query.Add("include_docs", "true")
+	marvinUrl.RawQuery = query.Encode()
+
+	log.Printf("[marvin] Getting tasks from %s\n", marvinUrl.String())
 
 	req, err := http.NewRequest("GET", marvinUrl.String(), nil)
 	if err != nil {
@@ -104,7 +148,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 	tasks = slices.DeleteFunc(tasks, func(task task) bool {
 		return task.Title == "" ||
 			task.DB != "Tasks" ||
-			task.ParentID != "unassigned" ||
+			task.ParentID.string != "unassigned" ||
 			task.Done ||
 			task.Recurring
 	})

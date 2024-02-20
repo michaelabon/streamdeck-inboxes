@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@elgato/cli": "^0.2.0"
+  }
+}

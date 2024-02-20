@@ -92,7 +92,7 @@ debug:
     start "" "http://localhost:23654/"
 
 start:
-    streamdeck restart {{ UUID }}
+    npx streamdeck restart {{ UUID }}
 restart: start
 
 ## Package the plugin for distribution to Elgato

@@ -9,6 +9,7 @@
   <style
       type="text/css"
     >
+    <![CDATA[
         .issues {
         fill: #91d4a8;
         }
@@ -30,6 +31,7 @@
         font-family: Inter, sans-serif;
         text-anchor: end;
         }
+    ]]>
     </style
   >
   <rect

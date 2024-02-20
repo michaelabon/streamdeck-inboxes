@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"ca.michaelabon.inboxes/internal/display"
 
@@ -13,7 +14,8 @@ import (
 )
 
 func main() {
-	fileName := "streamdeck-inboxes.log"
+	now := time.Now()
+	fileName := fmt.Sprintf("streamdeck-inboxes-%s-*.log", now.Format("2006-01-02t15h04"))
 	f, err := os.CreateTemp("logs", fileName)
 	if err != nil {
 		log.Fatalf("error creating temp file: %v", err)
