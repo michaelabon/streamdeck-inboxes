@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"ca.michaelabon.inboxes/internal/gmail"
-
 	"github.com/samwho/streamdeck"
 	sdcontext "github.com/samwho/streamdeck/context"
 )

@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"ca.michaelabon.inboxes/internal/display"
-
 	"github.com/samwho/streamdeck"
 )
 

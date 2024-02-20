@@ -11,7 +11,6 @@ import (
 
 	"ca.michaelabon.inboxes/internal/display"
 	"ca.michaelabon.inboxes/internal/gitlab"
-
 	"github.com/samwho/streamdeck"
 	sdcontext "github.com/samwho/streamdeck/context"
 )
