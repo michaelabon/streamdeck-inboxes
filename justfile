@@ -5,7 +5,7 @@ GO := "go"
 GOFLAGS := ""
 PLUGIN := UUID + ".sdPlugin"
 DISTRIBUTION_TOOL := "$HOME/.bin/DistributionTool"
-TARGET := "streamdeck-inboxes"
+TARGET := "build/streamdeck-inboxes"
 
 
 ## BUILD

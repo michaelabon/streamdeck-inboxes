@@ -336,7 +336,8 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/node,intellij,macos,windows,vim
 
-build/
-Release/
-streamdeck-inboxes
-streamdeck-inboxes.exe
+*/build/*
+!*/build/.gitkeep
+*/logs/*
+!*/logs/.gitkeep
+TODO.txt
