@@ -118,7 +118,7 @@
 		}
 	],
 	"Author": "Michael Abon",
-	"Category": "Inboxes",
+	"Category": "Unread Inbox",
 	"CategoryIcon": "icons/category",
 	"CodePath": "streamdeck-inboxes.exe",
 	"Description": "Show how many unread items you have",
