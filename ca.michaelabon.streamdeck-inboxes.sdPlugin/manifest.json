@@ -136,6 +136,7 @@
 		}
 	],
 	"SDKVersion": 2,
+	"UUID": "ca.michaelabon.streamdeck-inboxes",
 	"Software": {
 		"MinimumVersion": "6.4"
 	},
