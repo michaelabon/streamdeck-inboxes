@@ -116,3 +116,14 @@ restart: start
 package:
     mkdir -p build
     {{ DISTRIBUTION_TOOL }} -b -i {{ PLUGIN }} -o build/
+
+
+## LOGS
+
+[macos]
+logs-streamdeck:
+  cd "$HOME/Library/Logs/ElgatoStreamDeck" && cat $(ls -ltr | awk '{print $9}')
+
+[windows]
+logs-streamdeck:
+  cd "%appdata%\Elgato\StreamDeck\logs\"
