@@ -121,6 +121,7 @@
 	"Category": "Unread Inbox",
 	"CategoryIcon": "icons/category",
 	"CodePath": "streamdeck-inboxes.exe",
+	"CodePathMac": "streamdeck-inboxes",
 	"Description": "Show how many unread items you have",
 	"Icon": "icons/plugin",
 	"Name": "Unread Inbox",
