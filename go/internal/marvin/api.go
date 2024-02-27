@@ -107,8 +107,6 @@ func getUnseenCount(settings *Settings) (uint, error) {
 	query.Add("include_docs", "true")
 	marvinUrl.RawQuery = query.Encode()
 
-	log.Printf("[marvin] Getting tasks from %s\n", marvinUrl.String())
-
 	req, err := http.NewRequest("GET", marvinUrl.String(), nil)
 	if err != nil {
 		log.Println("[marvin]", "error while newing request", err)
