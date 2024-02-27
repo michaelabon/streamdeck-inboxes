@@ -16,6 +16,8 @@ func setupMarvin(client *streamdeck.Client) {
 
 	action := client.Action("ca.michaelabon.streamdeck-inboxes.marvin.action")
 
+	var quit chan struct{}
+
 	action.RegisterHandler(
 		streamdeck.WillAppear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
@@ -35,6 +37,33 @@ func setupMarvin(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
+			ticker := time.NewTicker(marvin.RefreshInterval)
+			quit = make(chan struct{})
+			go func() {
+				for {
+					select {
+					case <-ticker.C:
+						for ctxStr, settings := range storage {
+							ctx := context.Background()
+							ctx = sdcontext.WithContext(ctx, ctxStr)
+
+							err := setTitle(ctx, client)(marvin.FetchUnseenCount(settings))
+							if err != nil {
+								fakeEventForLogging := streamdeck.Event{
+									Action: "ca.michaelabon.streamdeck-inboxes.marvin.action",
+									Event:  "tick",
+								}
+								_ = logEventError(fakeEventForLogging, err)
+							}
+						}
+					case <-quit:
+						ticker.Stop()
+						return
+					}
+				}
+			}()
+
 			return nil
 		},
 	)
@@ -43,6 +72,7 @@ func setupMarvin(client *streamdeck.Client) {
 		streamdeck.WillDisappear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
 			delete(storage, event.Context)
+			close(quit)
 
 			return nil
 		},
@@ -100,22 +130,4 @@ func setupMarvin(client *streamdeck.Client) {
 			return nil
 		},
 	)
-
-	go func() {
-		for range time.Tick(marvin.RefreshInterval) {
-			for ctxStr, settings := range storage {
-				ctx := context.Background()
-				ctx = sdcontext.WithContext(ctx, ctxStr)
-
-				err := setTitle(ctx, client)(marvin.FetchUnseenCount(settings))
-				if err != nil {
-					fakeEventForLogging := streamdeck.Event{
-						Action: "ca.michaelabon.streamdeck-inboxes.marvin.action",
-						Event:  "tick",
-					}
-					_ = logEventError(fakeEventForLogging, err)
-				}
-			}
-		}
-	}()
 }

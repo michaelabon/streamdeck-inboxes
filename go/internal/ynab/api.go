@@ -19,7 +19,7 @@ type Settings struct {
 	NextAccountId       string `json:"-"`
 }
 
-const RefreshInternal = 2 * time.Minute
+const RefreshInterval = 2 * time.Minute
 
 func FetchUnseenCountAndNextAccountId(settings *Settings) (uint, error) {
 	if settings.BudgetUuid == "" {

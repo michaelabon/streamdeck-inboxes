@@ -16,6 +16,8 @@ func setupGmail(client *streamdeck.Client) {
 
 	action := client.Action("ca.michaelabon.streamdeck-inboxes.gmail.action")
 
+	var quit chan struct{}
+
 	action.RegisterHandler(
 		streamdeck.WillAppear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
@@ -35,6 +37,34 @@ func setupGmail(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
+			ticker := time.NewTimer(gmail.RefreshInterval)
+			quit = make(chan struct{})
+			go func() {
+				for {
+					select {
+					case <-ticker.C:
+						for ctxStr, settings := range storage {
+							ctx := context.Background()
+							ctx = sdcontext.WithContext(ctx, ctxStr)
+
+							err := setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
+							if err != nil {
+								fakeEventForLogging := streamdeck.Event{
+									Action: "ca.michaelabon.streamdeck-inboxes.gmail.action",
+									Event:  "tick",
+								}
+								_ = logEventError(fakeEventForLogging, err)
+							}
+						}
+
+					case <-quit:
+						ticker.Stop()
+						return
+					}
+				}
+			}()
+
 			return nil
 		},
 	)
@@ -43,6 +73,7 @@ func setupGmail(client *streamdeck.Client) {
 		streamdeck.WillDisappear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
 			delete(storage, event.Context)
+			close(quit)
 
 			return nil
 		},
@@ -101,22 +132,4 @@ func setupGmail(client *streamdeck.Client) {
 			return nil
 		},
 	)
-
-	go func() {
-		for range time.Tick(gmail.RefreshInterval) {
-			for ctxStr, settings := range storage {
-				ctx := context.Background()
-				ctx = sdcontext.WithContext(ctx, ctxStr)
-
-				err := setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
-				if err != nil {
-					fakeEventForLogging := streamdeck.Event{
-						Action: "ca.michaelabon.streamdeck-inboxes.gmail.action",
-						Event:  "tick",
-					}
-					_ = logEventError(fakeEventForLogging, err)
-				}
-			}
-		}
-	}()
 }

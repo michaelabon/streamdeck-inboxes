@@ -22,6 +22,8 @@ func setupGitLab(client *streamdeck.Client) {
 
 	action := client.Action(uuid)
 
+	var quit chan struct{}
+
 	results := gitlab.Result{}
 
 	action.RegisterHandler(
@@ -45,6 +47,35 @@ func setupGitLab(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
+			ticker := time.NewTicker(gitlab.RefreshInterval)
+			quit = make(chan struct{})
+
+			go func() {
+				for {
+					select {
+					case <-ticker.C:
+						for ctxStr, settings := range storage {
+							ctx := context.Background()
+							ctx = sdcontext.WithContext(ctx, ctxStr)
+
+							err := setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(settings))
+							if err != nil {
+								fakeEventForLogging := streamdeck.Event{
+									Action: uuid,
+									Event:  "tick",
+								}
+								_ = logEventError(fakeEventForLogging, err)
+							}
+						}
+
+					case <-quit:
+						ticker.Stop()
+						return
+					}
+				}
+			}()
+
 			return nil
 		},
 	)
@@ -53,6 +84,7 @@ func setupGitLab(client *streamdeck.Client) {
 		streamdeck.WillDisappear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
 			delete(storage, event.Context)
+			close(quit)
 
 			return nil
 		},
@@ -125,24 +157,6 @@ func setupGitLab(client *streamdeck.Client) {
 			return nil
 		},
 	)
-
-	go func() {
-		for range time.Tick(gitlab.RefreshInterval) {
-			for ctxStr, settings := range storage {
-				ctx := context.Background()
-				ctx = sdcontext.WithContext(ctx, ctxStr)
-
-				err := setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(settings))
-				if err != nil {
-					fakeEventForLogging := streamdeck.Event{
-						Action: uuid,
-						Event:  "tick",
-					}
-					_ = logEventError(fakeEventForLogging, err)
-				}
-			}
-		}
-	}()
 }
 
 //go:embed gitlab_button_default.svg

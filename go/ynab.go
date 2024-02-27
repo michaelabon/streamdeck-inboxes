@@ -18,6 +18,8 @@ func setupYnab(client *streamdeck.Client) {
 
 	action := client.Action(uuid)
 
+	var quit chan struct{}
+
 	action.RegisterHandler(
 		streamdeck.WillAppear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
@@ -37,6 +39,38 @@ func setupYnab(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
+			ticker := time.NewTicker(ynab.RefreshInterval)
+			quit = make(chan struct{})
+			go func() {
+				for {
+					select {
+					case <-ticker.C:
+						for ctxStr, settings := range storage {
+							ctx := context.Background()
+							ctx = sdcontext.WithContext(ctx, ctxStr)
+
+							err := setTitle(
+								ctx,
+								client,
+							)(
+								ynab.FetchUnseenCountAndNextAccountId(settings),
+							)
+							if err != nil {
+								fakeEventForLogging := streamdeck.Event{
+									Action: uuid,
+									Event:  "tick",
+								}
+								_ = logEventError(fakeEventForLogging, err)
+							}
+						}
+					case <-quit:
+						ticker.Stop()
+						return
+					}
+				}
+			}()
+
 			return nil
 		},
 	)
@@ -107,22 +141,4 @@ func setupYnab(client *streamdeck.Client) {
 			return nil
 		},
 	)
-
-	go func() {
-		for range time.Tick(ynab.RefreshInternal) {
-			for ctxStr, settings := range storage {
-				ctx := context.Background()
-				ctx = sdcontext.WithContext(ctx, ctxStr)
-
-				err := setTitle(ctx, client)(ynab.FetchUnseenCountAndNextAccountId(settings))
-				if err != nil {
-					fakeEventForLogging := streamdeck.Event{
-						Action: uuid,
-						Event:  "tick",
-					}
-					_ = logEventError(fakeEventForLogging, err)
-				}
-			}
-		}
-	}()
 }
