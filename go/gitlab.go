@@ -155,11 +155,13 @@ func setupGitLab(client *streamdeck.Client) {
 				return logEventError(event, err)
 			}
 
-			results, err = gitlab.FetchUnseenCount(settings)
-			err = setGitLabImage(ctx, client)(results, err)
-			if err != nil {
-				return logEventError(event, err)
-			}
+			go func() {
+				results, err = gitlab.FetchUnseenCount(settings)
+				err = setGitLabImage(ctx, client)(results, err)
+				if err != nil {
+					_ = logEventError(event, err)
+				}
+			}()
 
 			return nil
 		},
