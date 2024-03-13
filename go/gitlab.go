@@ -104,6 +104,8 @@ func setupGitLab(client *streamdeck.Client) {
 				return err
 			}
 
+			storage[event.Context] = settings
+
 			results, err = gitlab.FetchUnseenCount(settings)
 			err = setGitLabImage(ctx, client)(results, err)
 			if err != nil {
@@ -117,14 +119,8 @@ func setupGitLab(client *streamdeck.Client) {
 		streamdeck.KeyUp,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
 			var err error
-			p := streamdeck.DidReceiveSettingsPayload{}
-			if err = json.Unmarshal(event.Payload, &p); err != nil {
-				return err
-			}
-			settings := &gitlab.Settings{}
-			if err = json.Unmarshal(p.Settings, &settings); err != nil {
-				return err
-			}
+
+			settings := storage[event.Context]
 
 			gitlabUrl, err := url.Parse(settings.Server)
 			if err != nil {
@@ -134,14 +130,25 @@ func setupGitLab(client *streamdeck.Client) {
 			if results.ToDos > 0 {
 				gitlabUrl = gitlabUrl.JoinPath("/dashboard/todos")
 			} else if results.ReviewMRs > 0 {
-				gitlabUrl = gitlabUrl.JoinPath(fmt.Sprintf("/dashboard/merge_requests?reviewer_username=%s", settings.Username))
+				gitlabUrl = gitlabUrl.JoinPath("/dashboard/merge_requests")
+				query := gitlabUrl.Query()
+				query.Set("reviewer_username", settings.Username)
+				gitlabUrl.RawQuery = query.Encode()
 			} else if results.AssignedMRs > 0 {
-				gitlabUrl = gitlabUrl.JoinPath(fmt.Sprintf("/dashboard/merge_requests?assignee_username=%s", settings.Username))
+				gitlabUrl = gitlabUrl.JoinPath("/dashboard/merge_requests")
+				query := gitlabUrl.Query()
+				query.Set("assignee_username", settings.Username)
+				gitlabUrl.RawQuery = query.Encode()
 			} else if results.AssignedIssues > 0 {
-				gitlabUrl = gitlabUrl.JoinPath(fmt.Sprintf("/dashboard/issues?state=opened&assignee_username[]=%s", settings.Username))
+				gitlabUrl = gitlabUrl.JoinPath("/dashboard/issues")
+				query := gitlabUrl.Query()
+				query.Set("state", "opened")
+				query.Set("assignee_username[]", settings.Username)
 			} else {
 				gitlabUrl = gitlabUrl.JoinPath("/dashboard/projects/starred")
 			}
+
+			log.Printf("[gitlab] Generated URL: %s\n", gitlabUrl.String())
 
 			err = client.OpenURL(ctx, *gitlabUrl)
 			if err != nil {
