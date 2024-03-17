@@ -116,7 +116,9 @@ func setupGmail(client *streamdeck.Client) {
 				return err
 			}
 
-			gmailUrl, err := url.Parse("https://mail.google.com/mail/u/?authuser=" + settings.Username)
+			gmailUrl, err := url.Parse(
+				"https://mail.google.com/mail/u/?authuser=" + settings.Username,
+			)
 			if err != nil {
 				return err
 			}

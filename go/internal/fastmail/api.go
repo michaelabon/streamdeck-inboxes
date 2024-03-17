@@ -48,9 +48,7 @@ func makeRequest(url, method, bearer string, body io.Reader) ([]byte, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		log.Println("[fastmail]", "error while newing request", err)
-
-		return nil, err
+		return nil, fmt.Errorf("error while newing request: %w", err)
 	}
 
 	req.Header.Add("Authorization", "Bearer "+bearer)
@@ -60,23 +58,19 @@ func makeRequest(url, method, bearer string, body io.Reader) ([]byte, error) {
 
 	res, err := client.Do(req)
 	if err != nil {
-		log.Println("[fastmail]", "error while doing request", err)
-
-		return nil, err
+		return nil, fmt.Errorf("error while doing request: %w", err)
 	}
 
 	defer func(body io.ReadCloser) {
 		err := body.Close()
 		if err != nil {
-			log.Println("[fastmail]", "error while closing body", err)
+			log.Println("[fastmail]", "error while closing body:", err)
 		}
 	}(res.Body)
 
 	resBody, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Println("[fastmail]", "error while reading body", err)
-
-		return nil, err
+		return nil, fmt.Errorf("error while reading body: %w", err)
 	}
 
 	return resBody, nil
@@ -94,27 +88,20 @@ func getUnseenCount(settings Settings) (uint, error) {
 	sessionUrl := "https://api.fastmail.com/jmap/session"
 	rawSessionResponse, err := makeGetRequest(sessionUrl, settings.ApiToken)
 	if err != nil {
-		log.Println("[fastmail]", "error while getting session", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while getting session: %w", err)
 	}
 
 	sessionResponse := &SessionResponse{}
 	err = json.Unmarshal(rawSessionResponse, sessionResponse)
 	if err != nil {
-		log.Println("[fastmail]", "error while unmarshalling session response", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while unmarshalling session response: %w", err)
 	}
 	accountId, ok := sessionResponse.PrimaryAccounts["urn:ietf:params:jmap:mail"]
 	if !ok {
-		log.Println(
-			"[fastmail]",
-			"error while retrieving primary account",
+		return 0, fmt.Errorf(
+			"error while retrieving primary account %v",
 			sessionResponse.PrimaryAccounts,
 		)
-
-		return 0, errors.New("error while retrieving primary account")
 	}
 
 	log.Println("[fastmail]", "successfully got accountId", accountId)
@@ -133,17 +120,13 @@ func getUnseenCount(settings Settings) (uint, error) {
 	}`, accountId))
 	rawApiResponse, err := makePostRequest(apiUrl, settings.ApiToken, bytes.NewBuffer(apiBody))
 	if err != nil {
-		log.Println("[fastmail]", "error while posting request", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while posting Mailbox/get request: %w", err)
 	}
 
 	apiResponse := &apiResponse{}
 	err = json.Unmarshal(rawApiResponse, apiResponse)
 	if err != nil {
-		log.Println("[fastmail]", "error while unmarshalling session response", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while unmarshalling api response: %w", err)
 	}
 
 	invocation := apiResponse.MethodResponses[0]
@@ -153,7 +136,7 @@ func getUnseenCount(settings Settings) (uint, error) {
 		return m.Role == "inbox"
 	})
 	if mailboxIdx == -1 {
-		return 0, errors.New("unable to find inbox in methodResponse")
+		return 0, fmt.Errorf("unable to find inbox in methodResponse %v", invocation)
 	}
 
 	return mailboxes[mailboxIdx].UnreadEmails, nil
@@ -179,10 +162,14 @@ func (i *rawInvocation) UnmarshalJSON(data []byte) error {
 	const correctSize = 3
 	triplet := make([]json.RawMessage, 0, correctSize)
 	if err := json.Unmarshal(data, &triplet); err != nil {
-		return err
+		return fmt.Errorf("error while unmarshalling triplet: %w", err)
 	}
 	if len(triplet) != correctSize {
-		return errors.New("jmap: malformed Invocation object, need exactly 3 elements")
+		return fmt.Errorf(
+			"jmap: malformed Invocation object, need exactly 3 elements, got %d, %v",
+			len(triplet),
+			triplet,
+		)
 	}
 
 	if err := json.Unmarshal(triplet[0], &methodName); err != nil {
@@ -202,6 +189,6 @@ func (i *rawInvocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (i rawInvocation) MarshalJSON() ([]byte, error) {
+func (i *rawInvocation) MarshalJSON() ([]byte, error) {
 	return json.Marshal([3]interface{}{i.Name, i.Args, i.CallID})
 }
