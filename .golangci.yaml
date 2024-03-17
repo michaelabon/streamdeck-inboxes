@@ -1,0 +1,45 @@
+---
+run:
+  show-stats: true
+output:
+  sort-results: true
+issues:
+  max-same-issues: 10
+  fix: true
+linters:
+  enable:
+    - containedctx
+    - contextcheck
+    - dogsled
+    - dupword
+    - durationcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - execinquery
+    - exhaustive
+    - exportloopref
+    - forcetypeassert
+    - gci
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - goconst
+    - gocritic
+    - gofumpt
+    - gomnd
+    - gosec
+    - ireturn
+    - nilerr
+    - nilnil
+    - nlreturn
+    - nolintlint
+    - perfsprint
+    - predeclared
+    - reassign
+    - tagalign
+linters-settings:
+  gomnd:
+    ignored-files:
+      # We're switching on the length of the value;
+      # no need to extract these cases into constants
+      - "pad_right.go"

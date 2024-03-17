@@ -29,7 +29,9 @@ func main() {
 
 	ctx := context.Background()
 	if err := run(ctx); err != nil {
-		log.Fatalf("%v\n", err)
+		log.Printf("%v\n", err)
+
+		return
 	}
 }
 
@@ -56,6 +58,7 @@ func setup(client *streamdeck.Client) {
 
 func logEventError(event streamdeck.Event, err error) error {
 	log.Printf("[%s][%s] %v\n", event.Action, event.Event, err)
+
 	return err
 }
 
@@ -76,6 +79,7 @@ func setTitle(ctx context.Context, client *streamdeck.Client) func(uint, error) 
 			if newErr != nil {
 				return fmt.Errorf("error setting state: %w  -- %w", newErr, origErr)
 			}
+
 			return origErr
 		}
 
@@ -84,22 +88,26 @@ func setTitle(ctx context.Context, client *streamdeck.Client) func(uint, error) 
 			err = client.SetState(ctx, goldState)
 			if err != nil {
 				log.Println("error while setting state", err)
+
 				return err
 			}
 			err = client.SetTitle(ctx, "", streamdeck.HardwareAndSoftware)
 			if err != nil {
 				log.Println("error while setting icon title with unseen count", err)
+
 				return err
 			}
 		} else {
 			err = client.SetState(ctx, defaultState)
 			if err != nil {
 				log.Println("error while setting state", err)
+
 				return err
 			}
 			err = client.SetTitle(ctx, display.PadRight(strconv.Itoa(int(unseenCount))), streamdeck.HardwareAndSoftware)
 			if err != nil {
 				log.Println("error while setting icon title with unseen count", err)
+
 				return err
 			}
 		}

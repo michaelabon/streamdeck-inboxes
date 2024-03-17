@@ -71,6 +71,7 @@ func setupGitLab(client *streamdeck.Client) {
 
 					case <-quit:
 						ticker.Stop()
+
 						return
 					}
 				}
@@ -111,6 +112,7 @@ func setupGitLab(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
 			return nil
 		},
 	)
@@ -127,24 +129,25 @@ func setupGitLab(client *streamdeck.Client) {
 				return err
 			}
 
-			if results.ToDos > 0 {
+			switch {
+			case results.ToDos > 0:
 				gitlabUrl = gitlabUrl.JoinPath("/dashboard/todos")
-			} else if results.ReviewMRs > 0 {
+			case results.ReviewMRs > 0:
 				gitlabUrl = gitlabUrl.JoinPath("/dashboard/merge_requests")
 				query := gitlabUrl.Query()
 				query.Set("reviewer_username", settings.Username)
 				gitlabUrl.RawQuery = query.Encode()
-			} else if results.AssignedMRs > 0 {
+			case results.AssignedMRs > 0:
 				gitlabUrl = gitlabUrl.JoinPath("/dashboard/merge_requests")
 				query := gitlabUrl.Query()
 				query.Set("assignee_username", settings.Username)
 				gitlabUrl.RawQuery = query.Encode()
-			} else if results.AssignedIssues > 0 {
+			case results.AssignedIssues > 0:
 				gitlabUrl = gitlabUrl.JoinPath("/dashboard/issues")
 				query := gitlabUrl.Query()
 				query.Set("state", "opened")
 				query.Set("assignee_username[]", settings.Username)
-			} else {
+			default:
 				gitlabUrl = gitlabUrl.JoinPath("/dashboard/projects/starred")
 			}
 
@@ -191,6 +194,7 @@ func setGitLabImage(
 			if newErr != nil {
 				return fmt.Errorf("error setting blank image: %w  -- %w", newErr, origErr)
 			}
+
 			return origErr
 		}
 
@@ -214,6 +218,7 @@ func setGitLabImage(
 		err = client.SetImage(ctx, display.EncodeSVG(filledSvg), streamdeck.HardwareAndSoftware)
 		if err != nil {
 			log.Println("[gitlab] error while setting image", err)
+
 			return err
 		}
 

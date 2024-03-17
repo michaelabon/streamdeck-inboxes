@@ -49,14 +49,18 @@ func getUnseenCount(settings Settings) (uint, error) {
 
 	// Login
 	if err := c.Login(username, password); err != nil {
-		log.Fatal(err)
+		log.Println("[gmail]", "unable to login", err)
+
+		return 0, err
 	}
 
 	log.Println("Logged in")
 
 	status, err := c.Status("INBOX", []imap.StatusItem{imap.StatusUnseen})
 	if err != nil {
-		log.Fatal(err)
+		log.Println("[gmail]", "unable to get status of", "INBOX", err)
+
+		return 0, err
 	}
 
 	return uint(status.Unseen), nil

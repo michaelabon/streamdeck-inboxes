@@ -59,6 +59,7 @@ func setupMarvin(client *streamdeck.Client) {
 						}
 					case <-quit:
 						ticker.Stop()
+
 						return
 					}
 				}
@@ -97,6 +98,7 @@ func setupMarvin(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
 			return nil
 		},
 	)
@@ -127,6 +129,7 @@ func setupMarvin(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
 			return nil
 		},
 	)

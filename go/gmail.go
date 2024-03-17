@@ -60,6 +60,7 @@ func setupGmail(client *streamdeck.Client) {
 
 					case <-quit:
 						ticker.Stop()
+
 						return
 					}
 				}
@@ -98,6 +99,7 @@ func setupGmail(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
 			return nil
 		},
 	)
@@ -114,12 +116,11 @@ func setupGmail(client *streamdeck.Client) {
 				return err
 			}
 
-			gmailUrl, err := url.Parse("https://mail.google.com/mail/u/")
+			gmailUrl, err := url.Parse("https://mail.google.com/mail/u/?authuser=" + settings.Username)
 			if err != nil {
 				return err
 			}
 
-			gmailUrl.Query().Set("authuser", settings.Username)
 			err = client.OpenURL(ctx, *gmailUrl)
 			if err != nil {
 				return logEventError(event, err)
@@ -129,6 +130,7 @@ func setupGmail(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
 			return nil
 		},
 	)

@@ -61,6 +61,7 @@ func setupFastmail(client *streamdeck.Client) {
 						}
 					case <-quit:
 						ticker.Stop()
+
 						return
 					}
 				}
@@ -97,6 +98,7 @@ func setupFastmail(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
 			return nil
 		},
 	)
@@ -113,7 +115,7 @@ func setupFastmail(client *streamdeck.Client) {
 				return err
 			}
 
-			fastmailUrl, err := url.Parse("https://app.fastmail.com/mail/Inbox") //?u=a56140cf
+			fastmailUrl, err := url.Parse("https://app.fastmail.com/mail/Inbox") // ?u=a56140cf
 			if err != nil {
 				return err
 			}

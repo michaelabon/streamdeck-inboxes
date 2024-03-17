@@ -66,6 +66,7 @@ func setupYnab(client *streamdeck.Client) {
 						}
 					case <-quit:
 						ticker.Stop()
+
 						return
 					}
 				}
@@ -101,6 +102,7 @@ func setupYnab(client *streamdeck.Client) {
 			if err != nil {
 				return logEventError(event, err)
 			}
+
 			return nil
 		},
 	)

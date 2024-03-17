@@ -41,6 +41,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 	rawTransactions, err := makeRequest(transactionsUrl, settings.PersonalAccessToken)
 	if err != nil {
 		log.Println("[ynab]", "error while getting transactions", err)
+
 		return 0, err
 	}
 
@@ -59,6 +60,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 	err = json.Unmarshal(rawTransactions, transactions)
 	if err != nil {
 		log.Println("[ynab]", "error while unmarshalling session response", err)
+
 		return 0, err
 	}
 
@@ -79,6 +81,7 @@ func makeRequest(url, bearer string) ([]byte, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Println("[ynab]", "error while newing request", err)
+
 		return nil, err
 	}
 
@@ -88,6 +91,7 @@ func makeRequest(url, bearer string) ([]byte, error) {
 	res, err := client.Do(req)
 	if err != nil {
 		log.Println("[ynab]", "error while doing request", err)
+
 		return nil, err
 	}
 
@@ -99,6 +103,11 @@ func makeRequest(url, bearer string) ([]byte, error) {
 	}(res.Body)
 
 	resBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Println("[ynab]", "error while reading body", err)
+
+		return nil, err
+	}
 
 	return resBody, nil
 }

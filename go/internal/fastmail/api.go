@@ -21,6 +21,7 @@ func FetchUnseenCount(settings Settings) (uint, error) {
 	if settings.ApiToken == "" {
 		return 0, errors.New("missing ApiToken")
 	}
+
 	return getUnseenCount(settings)
 }
 
@@ -48,6 +49,7 @@ func makeRequest(url, method, bearer string, body io.Reader) ([]byte, error) {
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		log.Println("[fastmail]", "error while newing request", err)
+
 		return nil, err
 	}
 
@@ -59,6 +61,7 @@ func makeRequest(url, method, bearer string, body io.Reader) ([]byte, error) {
 	res, err := client.Do(req)
 	if err != nil {
 		log.Println("[fastmail]", "error while doing request", err)
+
 		return nil, err
 	}
 
@@ -70,6 +73,11 @@ func makeRequest(url, method, bearer string, body io.Reader) ([]byte, error) {
 	}(res.Body)
 
 	resBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Println("[fastmail]", "error while reading body", err)
+
+		return nil, err
+	}
 
 	return resBody, nil
 }
@@ -87,6 +95,7 @@ func getUnseenCount(settings Settings) (uint, error) {
 	rawSessionResponse, err := makeGetRequest(sessionUrl, settings.ApiToken)
 	if err != nil {
 		log.Println("[fastmail]", "error while getting session", err)
+
 		return 0, err
 	}
 
@@ -94,6 +103,7 @@ func getUnseenCount(settings Settings) (uint, error) {
 	err = json.Unmarshal(rawSessionResponse, sessionResponse)
 	if err != nil {
 		log.Println("[fastmail]", "error while unmarshalling session response", err)
+
 		return 0, err
 	}
 	accountId, ok := sessionResponse.PrimaryAccounts["urn:ietf:params:jmap:mail"]
@@ -103,8 +113,10 @@ func getUnseenCount(settings Settings) (uint, error) {
 			"error while retrieving primary account",
 			sessionResponse.PrimaryAccounts,
 		)
+
 		return 0, errors.New("error while retrieving primary account")
 	}
+
 	log.Println("[fastmail]", "successfully got accountId", accountId)
 
 	apiUrl := "https://api.fastmail.com/jmap/api"
@@ -122,6 +134,7 @@ func getUnseenCount(settings Settings) (uint, error) {
 	rawApiResponse, err := makePostRequest(apiUrl, settings.ApiToken, bytes.NewBuffer(apiBody))
 	if err != nil {
 		log.Println("[fastmail]", "error while posting request", err)
+
 		return 0, err
 	}
 
@@ -129,6 +142,7 @@ func getUnseenCount(settings Settings) (uint, error) {
 	err = json.Unmarshal(rawApiResponse, apiResponse)
 	if err != nil {
 		log.Println("[fastmail]", "error while unmarshalling session response", err)
+
 		return 0, err
 	}
 
@@ -139,7 +153,7 @@ func getUnseenCount(settings Settings) (uint, error) {
 		return m.Role == "inbox"
 	})
 	if mailboxIdx == -1 {
-		return 0, fmt.Errorf("unable to find inbox in methodResponse")
+		return 0, errors.New("unable to find inbox in methodResponse")
 	}
 
 	return mailboxes[mailboxIdx].UnreadEmails, nil
@@ -162,11 +176,12 @@ func (i *rawInvocation) UnmarshalJSON(data []byte) error {
 	var args MailboxGetResponse
 
 	// Slice so we can detect invalid size.
-	triplet := make([]json.RawMessage, 0, 3)
+	const correctSize = 3
+	triplet := make([]json.RawMessage, 0, correctSize)
 	if err := json.Unmarshal(data, &triplet); err != nil {
 		return err
 	}
-	if len(triplet) != 3 {
+	if len(triplet) != correctSize {
 		return errors.New("jmap: malformed Invocation object, need exactly 3 elements")
 	}
 

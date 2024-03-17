@@ -24,6 +24,8 @@ type Settings struct {
 	UserID              int    `json:"-"`
 }
 
+const perPage = 20
+
 func FetchUnseenCount(settings *Settings) (Result, error) {
 	if settings.PersonalAccessToken == "" {
 		return Result{}, errors.New("missing PersonalAccessToken")
@@ -39,6 +41,7 @@ func getUnreadCounts(settings *Settings) (Result, error) {
 	git, err := gitlab.NewClient(settings.PersonalAccessToken, gitlab.WithBaseURL(settings.Server))
 	if err != nil {
 		log.Println("[gitlab]", "error while getting session", err)
+
 		return Result{}, err
 	}
 
@@ -46,6 +49,7 @@ func getUnreadCounts(settings *Settings) (Result, error) {
 		user, _, err := git.Users.CurrentUser()
 		if err != nil {
 			log.Println("[gitlab]", "error while getting current user", err)
+
 			return Result{}, err
 		}
 		settings.Username = user.Username
@@ -89,7 +93,7 @@ func getAssignedIssues(git *gitlab.Client, username string) (uint, error) {
 		State:            gitlab.Ptr("opened"),
 		Scope:            gitlab.Ptr("all"),
 		ListOptions: gitlab.ListOptions{
-			PerPage:    20,
+			PerPage:    perPage,
 			Pagination: "keyset",
 		},
 	}
@@ -98,6 +102,7 @@ func getAssignedIssues(git *gitlab.Client, username string) (uint, error) {
 		issues, response, err := git.Issues.ListIssues(&options, requestOptions...)
 		if err != nil {
 			log.Println("[gitlab]", "error while getting assigned issues", err)
+
 			return 0, err
 		}
 
@@ -123,7 +128,7 @@ func getAssignedMRs(git *gitlab.Client, userID *gitlab.AssigneeIDValue) (uint, e
 		State:      gitlab.Ptr("opened"),
 		Scope:      gitlab.Ptr("all"),
 		ListOptions: gitlab.ListOptions{
-			PerPage:    20,
+			PerPage:    perPage,
 			Pagination: "keyset",
 		},
 	}
@@ -132,6 +137,7 @@ func getAssignedMRs(git *gitlab.Client, userID *gitlab.AssigneeIDValue) (uint, e
 		issues, response, err := git.MergeRequests.ListMergeRequests(&options, requestOptions...)
 		if err != nil {
 			log.Println("[gitlab]", "error while getting assigned issues", err)
+
 			return 0, err
 		}
 
@@ -157,7 +163,7 @@ func getReviewMRs(git *gitlab.Client, userID *gitlab.ReviewerIDValue) (uint, err
 		State:      gitlab.Ptr("opened"),
 		Scope:      gitlab.Ptr("all"),
 		ListOptions: gitlab.ListOptions{
-			PerPage:    20,
+			PerPage:    perPage,
 			Pagination: "keyset",
 		},
 	}
@@ -166,6 +172,7 @@ func getReviewMRs(git *gitlab.Client, userID *gitlab.ReviewerIDValue) (uint, err
 		issues, response, err := git.MergeRequests.ListMergeRequests(&options, requestOptions...)
 		if err != nil {
 			log.Println("[gitlab]", "error while getting review issues", err)
+
 			return 0, err
 		}
 
@@ -188,7 +195,7 @@ func getTodos(git *gitlab.Client) (uint, error) {
 
 	options := gitlab.ListTodosOptions{
 		ListOptions: gitlab.ListOptions{
-			PerPage:    20,
+			PerPage:    perPage,
 			Pagination: "keyset",
 		},
 	}
@@ -197,6 +204,7 @@ func getTodos(git *gitlab.Client) (uint, error) {
 		issues, response, err := git.Todos.ListTodos(&options, requestOptions...)
 		if err != nil {
 			log.Println("[gitlab]", "error while getting todos", err)
+
 			return 0, err
 		}
 
