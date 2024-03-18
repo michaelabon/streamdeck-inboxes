@@ -1,5 +1,19 @@
 ---
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  # Required: read access to the content for analysis.
+  contents: read
+  # Optional: write access to checks to allow the action to annotate code in the PR.
+  checks: write
+  # Optional: read access to pull request. Use with `only-new-issues` option.
+  pull-requests: read
+
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -17,6 +31,7 @@ jobs:
         with:
           version: v1.56.2
           working-directory: "./go"
+          only-new-issues: true
   build:
     runs-on: macos-latest
     steps:
@@ -31,8 +46,3 @@ jobs:
         run: brew install just
       -
         run: just build
-permissions:
-  # Required: read access to the content for analysis.
-  contents: read
-  # Optional: write access to checks to allow the action to annotate code in the PR.
-  checks: write
