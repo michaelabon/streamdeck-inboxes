@@ -7,8 +7,13 @@ PLUGIN := UUID + ".sdPlugin"
 DISTRIBUTION_TOOL := "$HOME/.bin/DistributionTool"
 TARGET := "build/streamdeck-inboxes"
 
+set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 
 ## BUILD
+
+[windows]
+build:
+    {{ GO }} build -C go {{ GOFLAGS }} -o ../{{ PLUGIN }}/{{ TARGET }}.exe .
 
 
 [macos]
