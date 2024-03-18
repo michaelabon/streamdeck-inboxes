@@ -1,0 +1,10 @@
+---
+on: [push]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "extractions/setup-just@v1"
+      - uses: "actions/checkout@v4"
+      - run: "just _install-go-tools"
+      - run: "just lint"
