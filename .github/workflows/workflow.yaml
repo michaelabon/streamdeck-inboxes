@@ -17,6 +17,20 @@ jobs:
         with:
           version: v1.56.2
           working-directory: "./go"
+  build:
+    runs-on: macos-latest
+    steps:
+      -
+        uses: actions/checkout@v4
+      -
+        uses: actions/setup-go@v5
+        with:
+          cache-dependency-path: "go/go.sum"
+          go-version-file: "go/go.mod"
+      -
+        run: brew install just
+      -
+        run: just build
 permissions:
   # Required: read access to the content for analysis.
   contents: read
