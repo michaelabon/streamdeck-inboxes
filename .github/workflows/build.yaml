@@ -1,0 +1,24 @@
+---
+name: "Build"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      -
+        uses: actions/checkout@v4
+      -
+        uses: actions/setup-go@v5
+        with:
+          cache-dependency-path: "go/go.sum"
+          go-version-file: "go/go.mod"
+      -
+        run: brew install just
+      -
+        run: just build
