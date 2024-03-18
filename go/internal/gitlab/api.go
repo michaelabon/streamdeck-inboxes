@@ -24,7 +24,10 @@ type Settings struct {
 	UserID              int    `json:"-"`
 }
 
-const perPage = 20
+const (
+	perPage        = 20
+	paginationType = "keyset"
+)
 
 func FetchUnseenCount(settings *Settings) (Result, error) {
 	if settings.PersonalAccessToken == "" {
@@ -94,7 +97,7 @@ func getAssignedIssues(git *gitlab.Client, username string) (uint, error) {
 		Scope:            gitlab.Ptr("all"),
 		ListOptions: gitlab.ListOptions{
 			PerPage:    perPage,
-			Pagination: "keyset",
+			Pagination: paginationType,
 		},
 	}
 	var requestOptions []gitlab.RequestOptionFunc
@@ -129,7 +132,7 @@ func getAssignedMRs(git *gitlab.Client, userID *gitlab.AssigneeIDValue) (uint, e
 		Scope:      gitlab.Ptr("all"),
 		ListOptions: gitlab.ListOptions{
 			PerPage:    perPage,
-			Pagination: "keyset",
+			Pagination: paginationType,
 		},
 	}
 	var requestOptions []gitlab.RequestOptionFunc
@@ -164,7 +167,7 @@ func getReviewMRs(git *gitlab.Client, userID *gitlab.ReviewerIDValue) (uint, err
 		Scope:      gitlab.Ptr("all"),
 		ListOptions: gitlab.ListOptions{
 			PerPage:    perPage,
-			Pagination: "keyset",
+			Pagination: paginationType,
 		},
 	}
 	var requestOptions []gitlab.RequestOptionFunc
@@ -196,7 +199,7 @@ func getTodos(git *gitlab.Client) (uint, error) {
 	options := gitlab.ListTodosOptions{
 		ListOptions: gitlab.ListOptions{
 			PerPage:    perPage,
-			Pagination: "keyset",
+			Pagination: paginationType,
 		},
 	}
 	var requestOptions []gitlab.RequestOptionFunc
