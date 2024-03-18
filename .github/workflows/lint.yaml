@@ -4,7 +4,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: "extractions/setup-just@v1"
-      - uses: "actions/checkout@v4"
-      - run: "just _install-go-tools"
-      - run: "just lint"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: v1.56.2
+          working-directory: "./go"
+permissions:
+  # Required: allow read access to the content for analysis.
+  contents: read
+  # Optional: Allow write access to checks to allow the action to annotate code in the PR.
+  checks: write
