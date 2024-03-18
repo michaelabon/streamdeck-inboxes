@@ -3,6 +3,7 @@ package todoist
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -40,18 +41,14 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 	projectsRequest, err := http.NewRequest("GET", projectsUrl, nil)
 	if err != nil {
-		log.Println("[todoist]", "error while newing projects request", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while newing projects request: %w", err)
 	}
 	projectsRequest.Header.Add("Accept", "application/json")
 	projectsRequest.Header.Add("Authorization", "Bearer "+settings.ApiToken)
 
 	projectsResponse, err := client.Do(projectsRequest)
 	if err != nil {
-		log.Println("[todoist]", "error while doing projects request", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while doing projects request: %w", err)
 	}
 
 	defer func(body io.ReadCloser) {
@@ -63,27 +60,16 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 	projectsResponseBody, err := io.ReadAll(projectsResponse.Body)
 	if err != nil {
-		log.Println(
-			"[todoist]",
-			"error while reading projects response body",
-			err,
-		)
-
-		return 0, err
+		return 0, fmt.Errorf("error while reading projects response body: %w", err)
 	}
 
 	var projects []project
 	err = json.Unmarshal(projectsResponseBody, &projects)
 	if err != nil {
-		log.Println(
-			"[todoist]",
-			"error while unmarshalling projects response",
+		return 0, fmt.Errorf(
+			"error while unmarshalling projects response: %w",
 			err,
-			"\n",
-			string(projectsResponseBody),
 		)
-
-		return 0, err
 	}
 
 	var inboxProjectIDs []string
@@ -99,46 +85,46 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 		tasksRequest, err := http.NewRequest("GET", tasksUrl, nil)
 		if err != nil {
-			log.Println("[todoist]", "error while newing tasks request", err)
-
-			return 0, err
+			return 0, fmt.Errorf("error while calling NewRequest to GET tasks: %w", err)
 		}
 		tasksRequest.Header.Add("Accept", "application/json")
 		tasksRequest.Header.Add("Authorization", "Bearer "+settings.ApiToken)
 
 		tasksResponse, err := client.Do(tasksRequest)
 		if err != nil {
-			log.Println("[todoist]", "error while doing tasks request", err)
-
-			return 0, err
+			return 0, fmt.Errorf("error while doing GET tasks request: %w", err)
 		}
 
 		tasksResponseBody, err := io.ReadAll(tasksResponse.Body)
 		if err != nil {
-			log.Println("[todoist]", "error while reading tasks body")
-			_ = tasksResponse.Body.Close()
+			closeErr := tasksResponse.Body.Close()
+			if closeErr != nil {
+				err = fmt.Errorf("error while closing task response body: %w", err)
+			}
 
-			return 0, err
+			return 0, fmt.Errorf("error while reading tasks body: %w", err)
 		}
 
 		var tasks []task
 		err = json.Unmarshal(tasksResponseBody, &tasks)
 		if err != nil {
-			log.Println(
-				"[todoist]",
-				"error while unmarshalling tasks response",
-				err,
-				"\n",
-				string(tasksResponseBody),
-			)
-			_ = tasksResponse.Body.Close()
+			closeErr := tasksResponse.Body.Close()
+			if closeErr != nil {
+				err = fmt.Errorf("error while closing task response body: %w", err)
+			}
 
-			return 0, err
+			return 0, fmt.Errorf(
+				"error while unmarshalling tasks response: %w",
+				err,
+			)
 		}
 
 		totalTasks += len(tasks)
 
-		_ = tasksResponse.Body.Close()
+		closeErr := tasksResponse.Body.Close()
+		if closeErr != nil {
+			return 0, fmt.Errorf("error while closing task response body: %w", err)
+		}
 	}
 
 	return uint(totalTasks), err

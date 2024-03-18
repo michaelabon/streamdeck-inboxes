@@ -2,6 +2,7 @@ package gmail
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -29,38 +30,27 @@ func getUnseenCount(settings Settings) (uint, error) {
 	username := settings.Username
 	password := settings.Password
 
-	log.Println("Connecting to server...")
-
-	// Connect to server
 	c, err := client.DialTLS("imap.gmail.com:993", nil)
 	if err != nil {
-		log.Fatal(err)
+		return 0, fmt.Errorf("error while dialing the server: %w", err)
 	}
-
-	log.Println("Connected")
 
 	// Don't forget to logout
 	defer func(c *client.Client) {
 		err := c.Logout()
 		if err != nil {
-			log.Println("unable to close imapClient", err)
+			log.Println("[gmail]", "unable to close imapClient", err)
 		}
 	}(c)
 
-	// Login
 	if err := c.Login(username, password); err != nil {
-		log.Println("[gmail]", "unable to login", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error during login: %w", err)
 	}
 
-	log.Println("Logged in")
-
-	status, err := c.Status("INBOX", []imap.StatusItem{imap.StatusUnseen})
+	const mailboxName = "INBOX"
+	status, err := c.Status(mailboxName, []imap.StatusItem{imap.StatusUnseen})
 	if err != nil {
-		log.Println("[gmail]", "unable to get status of", "INBOX", err)
-
-		return 0, err
+		return 0, fmt.Errorf("unable to get status of %s: %w", mailboxName, err)
 	}
 
 	return uint(status.Unseen), nil

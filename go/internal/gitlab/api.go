@@ -2,7 +2,7 @@ package gitlab
 
 import (
 	"errors"
-	"log"
+	"fmt"
 	"time"
 
 	"github.com/xanzy/go-gitlab"
@@ -43,17 +43,13 @@ func FetchUnseenCount(settings *Settings) (Result, error) {
 func getUnreadCounts(settings *Settings) (Result, error) {
 	git, err := gitlab.NewClient(settings.PersonalAccessToken, gitlab.WithBaseURL(settings.Server))
 	if err != nil {
-		log.Println("[gitlab]", "error while getting session", err)
-
-		return Result{}, err
+		return Result{}, fmt.Errorf("error while getting session: %w", err)
 	}
 
 	if settings.UserID == 0 || settings.Username == "" {
 		user, _, err := git.Users.CurrentUser()
 		if err != nil {
-			log.Println("[gitlab]", "error while getting current user", err)
-
-			return Result{}, err
+			return Result{}, fmt.Errorf("error while getting current user: %w", err)
 		}
 		settings.Username = user.Username
 		settings.UserID = user.ID
@@ -104,11 +100,8 @@ func getAssignedIssues(git *gitlab.Client, username string) (uint, error) {
 	for {
 		issues, response, err := git.Issues.ListIssues(&options, requestOptions...)
 		if err != nil {
-			log.Println("[gitlab]", "error while getting assigned issues", err)
-
-			return 0, err
+			return 0, fmt.Errorf("error while getting assigned issues: %w", err)
 		}
-
 		result += uint(len(issues))
 
 		if response.NextLink == "" {
@@ -139,11 +132,8 @@ func getAssignedMRs(git *gitlab.Client, userID *gitlab.AssigneeIDValue) (uint, e
 	for {
 		issues, response, err := git.MergeRequests.ListMergeRequests(&options, requestOptions...)
 		if err != nil {
-			log.Println("[gitlab]", "error while getting assigned issues", err)
-
-			return 0, err
+			return 0, fmt.Errorf("error while getting assigned MRs: %w", err)
 		}
-
 		result += uint(len(issues))
 
 		if response.NextLink == "" {
@@ -174,11 +164,8 @@ func getReviewMRs(git *gitlab.Client, userID *gitlab.ReviewerIDValue) (uint, err
 	for {
 		issues, response, err := git.MergeRequests.ListMergeRequests(&options, requestOptions...)
 		if err != nil {
-			log.Println("[gitlab]", "error while getting review issues", err)
-
-			return 0, err
+			return 0, fmt.Errorf("error while getting review MRs: %w", err)
 		}
-
 		result += uint(len(issues))
 
 		if response.NextLink == "" {
@@ -206,11 +193,8 @@ func getTodos(git *gitlab.Client) (uint, error) {
 	for {
 		issues, response, err := git.Todos.ListTodos(&options, requestOptions...)
 		if err != nil {
-			log.Println("[gitlab]", "error while getting todos", err)
-
-			return 0, err
+			return 0, fmt.Errorf("error while getting todos: %w", err)
 		}
-
 		result += uint(len(issues))
 
 		if response.NextLink == "" {

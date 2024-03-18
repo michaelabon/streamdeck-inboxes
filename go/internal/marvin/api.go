@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -100,9 +101,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 	marvinUrl, err := url.Parse(settings.Server)
 	if err != nil {
-		log.Println("[marvin] error while parsing url")
-
-		return 0, err
+		return 0, fmt.Errorf("error while parsing url: %w", err)
 	}
 	marvinUrl = marvinUrl.JoinPath(settings.Database, "_all_docs")
 	query := marvinUrl.Query()
@@ -111,18 +110,14 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 	req, err := http.NewRequest("GET", marvinUrl.String(), nil)
 	if err != nil {
-		log.Println("[marvin]", "error while newing request", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while newing request: %w", err)
 	}
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Authorization", makeBasicAuthorization(settings))
 
 	res, err := client.Do(req)
 	if err != nil {
-		log.Println("[marvin]", "error while doing request", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while doing request: %w", err)
 	}
 
 	defer func(body io.ReadCloser) {
@@ -134,17 +129,13 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 	resBody, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Println("[marvin]", "error while reading body", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while reading body: %w", err)
 	}
 
 	marvinResponse := &response{}
 	err = json.Unmarshal(resBody, marvinResponse)
 	if err != nil {
-		log.Println("[marvin]", "error while unmarshalling session response", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while unmarshalling session response: %w", err)
 	}
 
 	tasks := make([]task, len(marvinResponse.Rows))

@@ -40,9 +40,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 
 	rawTransactions, err := makeRequest(transactionsUrl, settings.PersonalAccessToken)
 	if err != nil {
-		log.Println("[ynab]", "error while getting transactions", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while getting transactions: %w", err)
 	}
 
 	type Transaction struct {
@@ -59,9 +57,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 	transactions := &TransactionsResponse{}
 	err = json.Unmarshal(rawTransactions, transactions)
 	if err != nil {
-		log.Println("[ynab]", "error while unmarshalling session response", err)
-
-		return 0, err
+		return 0, fmt.Errorf("error while unmarshalling session response: %w", err)
 	}
 
 	result := slices.DeleteFunc(transactions.Data.Transactions, func(t Transaction) bool {
@@ -80,9 +76,7 @@ func makeRequest(url, bearer string) ([]byte, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Println("[ynab]", "error while newing request", err)
-
-		return nil, err
+		return nil, fmt.Errorf("error while newing request: %w", err)
 	}
 
 	req.Header.Add("Accept", "application/json")
@@ -90,9 +84,7 @@ func makeRequest(url, bearer string) ([]byte, error) {
 
 	res, err := client.Do(req)
 	if err != nil {
-		log.Println("[ynab]", "error while doing request", err)
-
-		return nil, err
+		return nil, fmt.Errorf("error while doing request: %w", err)
 	}
 
 	defer func(body io.ReadCloser) {
@@ -104,9 +96,7 @@ func makeRequest(url, bearer string) ([]byte, error) {
 
 	resBody, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Println("[ynab]", "error while reading body", err)
-
-		return nil, err
+		return nil, fmt.Errorf("error while reading body: %w", err)
 	}
 
 	return resBody, nil
