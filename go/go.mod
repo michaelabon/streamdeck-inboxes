@@ -1,6 +1,8 @@
 module ca.michaelabon.inboxes
 
-go 1.20
+go 1.22
+
+toolchain go1.22.1
 
 require (
 	github.com/emersion/go-imap v1.2.1
