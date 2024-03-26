@@ -1,7 +1,7 @@
 ---
 run:
-  show-stats: true
 output:
+  show-stats: true
   sort-results: true
 issues:
   max-same-issues: 10
@@ -9,6 +9,7 @@ issues:
 linters:
   enable:
     - containedctx
+    - copyloopvar
     - dogsled
     - dupword
     - durationcheck
@@ -27,6 +28,7 @@ linters:
     - gofumpt
     - gomnd
     - gosec
+    - intrange
     - ireturn
     - nilerr
     - nilnil
