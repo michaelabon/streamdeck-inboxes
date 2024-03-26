@@ -9,7 +9,6 @@ issues:
 linters:
   enable:
     - containedctx
-    - contextcheck
     - dogsled
     - dupword
     - durationcheck

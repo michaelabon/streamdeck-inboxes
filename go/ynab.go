@@ -11,9 +11,9 @@ import (
 	sdcontext "github.com/samwho/streamdeck/context"
 )
 
-func setupYnab(client *streamdeck.Client) {
-	const uuid = "ca.michaelabon.streamdeck-inboxes.ynab.action"
+const uuid = "ca.michaelabon.streamdeck-inboxes.ynab.action"
 
+func setupYnab(client *streamdeck.Client) {
 	storage := map[string]*ynab.Settings{}
 
 	action := client.Action(uuid)
@@ -46,24 +46,7 @@ func setupYnab(client *streamdeck.Client) {
 				for {
 					select {
 					case <-ticker.C:
-						for ctxStr, settings := range storage {
-							ctx := context.Background()
-							ctx = sdcontext.WithContext(ctx, ctxStr)
-
-							err := setTitle(
-								ctx,
-								client,
-							)(
-								ynab.FetchUnseenCountAndNextAccountId(settings),
-							)
-							if err != nil {
-								fakeEventForLogging := streamdeck.Event{
-									Action: uuid,
-									Event:  "tick",
-								}
-								_ = logEventError(fakeEventForLogging, err)
-							}
-						}
+						doUpdate(storage, client)
 					case <-quit:
 						ticker.Stop()
 
@@ -110,14 +93,7 @@ func setupYnab(client *streamdeck.Client) {
 	action.RegisterHandler(
 		streamdeck.KeyUp,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-			p := streamdeck.DidReceiveSettingsPayload{}
-			if err := json.Unmarshal(event.Payload, &p); err != nil {
-				return logEventError(event, err)
-			}
-			settings := &ynab.Settings{}
-			if err := json.Unmarshal(p.Settings, &settings); err != nil {
-				return logEventError(event, err)
-			}
+			settings := storage[event.Context]
 
 			ynabUrl, err := url.Parse("https://app.ynab.com/")
 			if err != nil {
@@ -140,7 +116,30 @@ func setupYnab(client *streamdeck.Client) {
 				return logEventError(event, err)
 			}
 
+			doUpdate(storage, client)
+
 			return nil
 		},
 	)
+}
+
+func doUpdate(storage map[string]*ynab.Settings, client *streamdeck.Client) {
+	for ctxStr, settings := range storage {
+		ctx := context.Background()
+		ctx = sdcontext.WithContext(ctx, ctxStr)
+
+		err := setTitle(
+			ctx,
+			client,
+		)(
+			ynab.FetchUnseenCountAndNextAccountId(settings),
+		)
+		if err != nil {
+			fakeEventForLogging := streamdeck.Event{
+				Action: uuid,
+				Event:  "tick",
+			}
+			_ = logEventError(fakeEventForLogging, err)
+		}
+	}
 }
