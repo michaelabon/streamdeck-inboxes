@@ -107,14 +107,7 @@ func setupGmail(client *streamdeck.Client) {
 	action.RegisterHandler(
 		streamdeck.KeyUp,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-			p := streamdeck.KeyUpPayload{}
-			if err := json.Unmarshal(event.Payload, &p); err != nil {
-				return err
-			}
-			settings := gmail.Settings{}
-			if err := json.Unmarshal(p.Settings, &settings); err != nil {
-				return err
-			}
+			settings := storage[event.Context]
 
 			gmailUrl, err := url.Parse(
 				"https://mail.google.com/mail/u/?authuser=" + settings.Username,
