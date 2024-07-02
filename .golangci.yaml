@@ -1,5 +1,4 @@
 ---
-run:
 output:
   show-stats: true
   sort-results: true
