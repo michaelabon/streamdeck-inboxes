@@ -121,9 +121,11 @@ func setupGmail(client *streamdeck.Client) {
 				return logEventError(event, err)
 			}
 
-			err = setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
-			if err != nil {
-				return logEventError(event, err)
+			for i := 10; i < 180; i += 10 {
+				go func() {
+					time.Sleep(time.Duration(i) * time.Second)
+					_ = setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
+				}()
 			}
 
 			return nil
