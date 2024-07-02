@@ -25,7 +25,7 @@ linters:
     - goconst
     - gocritic
     - gofumpt
-    - gomnd
+    - mnd
     - gosec
     - intrange
     - ireturn
@@ -38,7 +38,7 @@ linters:
     - reassign
     - tagalign
 linters-settings:
-  gomnd:
+  mnd:
     ignored-files:
       # We're switching on the length of the value;
       # no need to extract these cases into constants
