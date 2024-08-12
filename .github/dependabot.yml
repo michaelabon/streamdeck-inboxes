@@ -1,19 +1,39 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
+# Updating this? Here's the documentation:
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 version: 2
 updates:
-  - package-ecosystem: "gomod" # See documentation for possible values
-    directory: "/go" # Location of package manifests
+  -
+    package-ecosystem: "gomod"
+    directory: "/go"
     schedule:
-      interval: daily
-    assignees:
-      - michaelabon
+      interval: "weekly"
+      day: "tuesday"
+      time: "15:10"
+      timezone: "America/Winnipeg"
     allow:
-      - dependency-type: "all"
+      -
+        dependency-type: "all"
+    assignees:
+      - "michaelabon"
+    labels:
+      - "dependencies"
     groups:
       "golang.org/x":
         patterns:
           - "golang.org/x/*"
+  -
+    package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "15:10"
+      timezone: "America/Winnipeg"
+    allow:
+      -
+        dependency-type: "all"
+    assignees:
+      - "michaelabon"
+    labels:
+      - "dependencies"
