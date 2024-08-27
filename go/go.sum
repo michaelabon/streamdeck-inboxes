@@ -32,8 +32,8 @@ github.com/samwho/streamdeck v0.0.0-20190725183037-2b866fdcb4a6 h1:ocHB+wIjLCdid
 github.com/samwho/streamdeck v0.0.0-20190725183037-2b866fdcb4a6/go.mod h1:OjeKL1Q8xRGm1zHGmtu9JeQUFNOXXXIcSZvCNzRP3GM=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/xanzy/go-gitlab v0.107.0 h1:P2CT9Uy9yN9lJo3FLxpMZ4xj6uWcpnigXsjvqJ6nd2Y=
-github.com/xanzy/go-gitlab v0.107.0/go.mod h1:wKNKh3GkYDMOsGmnfuX+ITCmDuSDWFO0G+C4AygL9RY=
+github.com/xanzy/go-gitlab v0.108.0 h1:IEvEUWFR5G1seslRhJ8gC//INiIUqYXuSUoBd7/gFKE=
+github.com/xanzy/go-gitlab v0.108.0/go.mod h1:wKNKh3GkYDMOsGmnfuX+ITCmDuSDWFO0G+C4AygL9RY=
 golang.org/x/exp v0.0.0-20240119083558-1b970713d09a h1:Q8/wZp0KX97QFTc2ywcOE0YRjZPVIx+MXInMzdvQqcA=
 golang.org/x/exp v0.0.0-20240119083558-1b970713d09a/go.mod h1:idGWGoKP1toJGkd5/ig9ZLuPcZBC3ewk7SzmH0uou08=
 golang.org/x/oauth2 v0.22.0 h1:BzDx2FehcG7jJwgWLELCdmLuxk2i+x9UDpSiss2u0ZA=
