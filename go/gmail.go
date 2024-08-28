@@ -13,9 +13,7 @@ import (
 
 func setupGmail(client *streamdeck.Client) {
 	storage := map[string]gmail.Settings{}
-
 	action := client.Action("ca.michaelabon.streamdeck-inboxes.gmail.action")
-
 	var quit chan struct{}
 
 	action.RegisterHandler(
@@ -73,8 +71,8 @@ func setupGmail(client *streamdeck.Client) {
 	action.RegisterHandler(
 		streamdeck.WillDisappear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-			delete(storage, event.Context)
 			close(quit)
+			delete(storage, event.Context)
 
 			return nil
 		},

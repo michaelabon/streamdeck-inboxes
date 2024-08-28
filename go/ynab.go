@@ -15,9 +15,7 @@ const uuid = "ca.michaelabon.streamdeck-inboxes.ynab.action"
 
 func setupYnab(client *streamdeck.Client) {
 	storage := map[string]*ynab.Settings{}
-
 	action := client.Action(uuid)
-
 	var quit chan struct{}
 
 	action.RegisterHandler(
@@ -32,21 +30,18 @@ func setupYnab(client *streamdeck.Client) {
 			if err := json.Unmarshal(p.Settings, &settings); err != nil {
 				return err
 			}
-
 			storage[event.Context] = settings
 
-			err := setTitle(ctx, client)(ynab.FetchUnseenCountAndNextAccountId(settings))
-			if err != nil {
-				return logEventError(event, err)
-			}
+			doUpdate(storage, client, event.Event)
 
-			ticker := time.NewTicker(ynab.RefreshInterval)
+			ticker := time.NewTicker(ynab.FastRefreshInterval)
 			quit = make(chan struct{})
+
 			go func() {
 				for {
 					select {
 					case <-ticker.C:
-						doUpdate(storage, client)
+						doUpdate(storage, client, "tick")
 					case <-quit:
 						ticker.Stop()
 
@@ -62,6 +57,7 @@ func setupYnab(client *streamdeck.Client) {
 	action.RegisterHandler(
 		streamdeck.WillDisappear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
+			close(quit)
 			delete(storage, event.Context)
 
 			return nil
@@ -116,14 +112,14 @@ func setupYnab(client *streamdeck.Client) {
 				return logEventError(event, err)
 			}
 
-			doUpdate(storage, client)
+			doUpdate(storage, client, event.Event)
 
 			return nil
 		},
 	)
 }
 
-func doUpdate(storage map[string]*ynab.Settings, client *streamdeck.Client) {
+func doUpdate(storage map[string]*ynab.Settings, client *streamdeck.Client, event string) {
 	for ctxStr, settings := range storage {
 		ctx := context.Background()
 		ctx = sdcontext.WithContext(ctx, ctxStr)
@@ -137,7 +133,7 @@ func doUpdate(storage map[string]*ynab.Settings, client *streamdeck.Client) {
 		if err != nil {
 			fakeEventForLogging := streamdeck.Event{
 				Action: uuid,
-				Event:  "tick",
+				Event:  event,
 			}
 			_ = logEventError(fakeEventForLogging, err)
 		}

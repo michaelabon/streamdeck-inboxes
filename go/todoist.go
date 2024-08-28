@@ -13,9 +13,7 @@ import (
 
 func setupTodoist(client *streamdeck.Client) {
 	storage := map[string]*todoist.Settings{}
-
 	action := client.Action("ca.michaelabon.streamdeck-inboxes.todoist.action")
-
 	var quit chan struct{}
 
 	action.RegisterHandler(
