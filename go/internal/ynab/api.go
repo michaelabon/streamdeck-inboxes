@@ -19,7 +19,7 @@ type Settings struct {
 	NextAccountId       string `json:"-"`
 }
 
-const RefreshInterval = 2 * time.Minute
+const FastRefreshInterval = 20 * time.Second
 
 func FetchUnseenCountAndNextAccountId(settings *Settings) (uint, error) {
 	if settings.BudgetUuid == "" {
@@ -98,6 +98,10 @@ func makeRequest(url, bearer string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error while reading body: %w", err)
 	}
+
+	// Keep an eye on rate limit
+	rateLimitResult := res.Header.Get("X-Rate-Limit")
+	log.Println("[ynab]", "rate limit", rateLimitResult)
 
 	return resBody, nil
 }

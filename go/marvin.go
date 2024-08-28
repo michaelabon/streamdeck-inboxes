@@ -13,9 +13,7 @@ import (
 
 func setupMarvin(client *streamdeck.Client) {
 	storage := map[string]*marvin.Settings{}
-
 	action := client.Action("ca.michaelabon.streamdeck-inboxes.marvin.action")
-
 	var quit chan struct{}
 
 	action.RegisterHandler(
@@ -72,8 +70,8 @@ func setupMarvin(client *streamdeck.Client) {
 	action.RegisterHandler(
 		streamdeck.WillDisappear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-			delete(storage, event.Context)
 			close(quit)
+			delete(storage, event.Context)
 
 			return nil
 		},
