@@ -104,7 +104,7 @@ func setTitle(ctx context.Context, client *streamdeck.Client) func(uint, error) 
 
 				return err
 			}
-			err = client.SetTitle(ctx, display.PadRight(strconv.Itoa(int(unseenCount))), streamdeck.HardwareAndSoftware)
+			err = client.SetTitle(ctx, display.PadRight(strconv.FormatUint(uint64(unseenCount), 10)), streamdeck.HardwareAndSoftware)
 			if err != nil {
 				log.Println("error while setting icon title with unseen count", err)
 
