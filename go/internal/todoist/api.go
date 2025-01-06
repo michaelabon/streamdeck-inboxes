@@ -79,7 +79,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 		}
 	}
 
-	totalTasks := 0
+	totalTasks := uint(0)
 	for _, inboxProjectID := range inboxProjectIDs {
 		tasksUrl := "https://api.todoist.com/rest/v2/tasks?project_id=" + inboxProjectID
 
@@ -119,7 +119,7 @@ func getUnseenCount(settings *Settings) (uint, error) {
 			)
 		}
 
-		totalTasks += len(tasks)
+		totalTasks += uint(len(tasks))
 
 		closeErr := tasksResponse.Body.Close()
 		if closeErr != nil {
@@ -127,5 +127,5 @@ func getUnseenCount(settings *Settings) (uint, error) {
 		}
 	}
 
-	return uint(totalTasks), err
+	return totalTasks, err
 }
