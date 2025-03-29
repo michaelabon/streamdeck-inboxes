@@ -1,10 +1,4 @@
----
-output:
-  show-stats: true
-  sort-results: true
-issues:
-  max-same-issues: 10
-  fix: true
+version: "2"
 linters:
   enable:
     - containedctx
@@ -17,16 +11,14 @@ linters:
     - errorlint
     - exhaustive
     - forcetypeassert
-    - gci
     - gocheckcompilerdirectives
     - gochecknoglobals
     - goconst
     - gocritic
-    - gofumpt
-    - mnd
     - gosec
     - intrange
     - ireturn
+    - mnd
     - nilerr
     - nilnil
     - nlreturn
@@ -35,9 +27,31 @@ linters:
     - predeclared
     - reassign
     - tagalign
-linters-settings:
-  mnd:
-    ignored-files:
-      # We're switching on the length of the value;
-      # no need to extract these cases into constants
-      - "pad_right.go"
+  settings:
+    mnd:
+      ignored-files:
+        - pad_right.go
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  max-same-issues: 10
+  fix: true
+formatters:
+  enable:
+    - gci
+    - gofumpt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
