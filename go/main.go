@@ -67,6 +67,19 @@ const (
 	goldState    = 1
 )
 
+func setLoading(ctx context.Context, client *streamdeck.Client) error {
+	err := client.SetTitle(ctx, display.PadRight("..."), streamdeck.HardwareAndSoftware)
+	if err != nil {
+		return fmt.Errorf("could not set title: %w", err)
+	}
+	err = client.SetState(ctx, defaultState)
+	if err != nil {
+		return fmt.Errorf("could not set state: %w", err)
+	}
+
+	return nil
+}
+
 func setTitle(ctx context.Context, client *streamdeck.Client) func(uint, error) error {
 	return func(unseenCount uint, origErr error) error {
 		if origErr != nil {

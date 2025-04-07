@@ -29,7 +29,6 @@ func setupGitLab(client *streamdeck.Client) {
 	action.RegisterHandler(
 		streamdeck.WillAppear,
 		func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
-			var err error
 			p := streamdeck.WillAppearPayload{}
 			if err := json.Unmarshal(event.Payload, &p); err != nil {
 				return err
@@ -42,8 +41,12 @@ func setupGitLab(client *streamdeck.Client) {
 
 			storage[event.Context] = settings
 
-			results, err = gitlab.FetchUnseenCount(settings)
-			err = setGitLabImage(ctx, client)(results, err)
+			// Show a loading indicator or blank image immediately
+			err := client.SetTitle(ctx, "", streamdeck.HardwareAndSoftware)
+			if err != nil {
+				return logEventError(event, err)
+			}
+			err = client.SetImage(ctx, "", streamdeck.HardwareAndSoftware)
 			if err != nil {
 				return logEventError(event, err)
 			}
@@ -52,6 +55,20 @@ func setupGitLab(client *streamdeck.Client) {
 			quit = make(chan struct{})
 
 			go func() {
+				// Perform first update asynchronously
+				localCtx := sdcontext.WithContext(context.Background(), event.Context)
+				localSettings := settings
+
+				err = setGitLabImage(localCtx, client)(gitlab.FetchUnseenCount(localSettings))
+				if err != nil {
+					fakeEventForLogging := streamdeck.Event{
+						Action: uuid,
+						Event:  "async_init",
+					}
+					_ = logEventError(fakeEventForLogging, err)
+				}
+
+				// Then start the ticker loop for periodic updates
 				for {
 					select {
 					case <-ticker.C:
@@ -59,7 +76,7 @@ func setupGitLab(client *streamdeck.Client) {
 							ctx := context.Background()
 							ctx = sdcontext.WithContext(ctx, ctxStr)
 
-							err := setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(settings))
+							err = setGitLabImage(ctx, client)(gitlab.FetchUnseenCount(settings))
 							if err != nil {
 								fakeEventForLogging := streamdeck.Event{
 									Action: uuid,
@@ -68,7 +85,6 @@ func setupGitLab(client *streamdeck.Client) {
 								_ = logEventError(fakeEventForLogging, err)
 							}
 						}
-
 					case <-quit:
 						ticker.Stop()
 

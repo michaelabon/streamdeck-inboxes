@@ -31,14 +31,30 @@ func setupMarvin(client *streamdeck.Client) {
 
 			storage[event.Context] = settings
 
-			err := setTitle(ctx, client)(marvin.FetchUnseenCount(settings))
+			// Show a loading indicator immediately
+			err := setLoading(ctx, client)
 			if err != nil {
 				return logEventError(event, err)
 			}
 
 			ticker := time.NewTicker(marvin.RefreshInterval)
 			quit = make(chan struct{})
+
 			go func() {
+				// Perform first update asynchronously
+				localCtx := sdcontext.WithContext(context.Background(), event.Context)
+				localSettings := settings
+
+				err := setTitle(localCtx, client)(marvin.FetchUnseenCount(localSettings))
+				if err != nil {
+					fakeEventForLogging := streamdeck.Event{
+						Action: "ca.michaelabon.streamdeck-inboxes.marvin.action",
+						Event:  "async_init",
+					}
+					_ = logEventError(fakeEventForLogging, err)
+				}
+
+				// Then start the ticker loop for periodic updates
 				for {
 					select {
 					case <-ticker.C:
