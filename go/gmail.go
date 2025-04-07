@@ -31,14 +31,30 @@ func setupGmail(client *streamdeck.Client) {
 
 			storage[event.Context] = settings
 
-			err := setTitle(ctx, client)(gmail.FetchUnseenCount(settings))
+			// Show a loading indicator immediately
+			err := setLoading(ctx, client)
 			if err != nil {
 				return logEventError(event, err)
 			}
 
-			ticker := time.NewTimer(gmail.RefreshInterval)
+			ticker := time.NewTicker(gmail.RefreshInterval)
 			quit = make(chan struct{})
+
 			go func() {
+				// Perform first update asynchronously
+				localCtx := sdcontext.WithContext(context.Background(), event.Context)
+				localSettings := settings
+
+				err := setTitle(localCtx, client)(gmail.FetchUnseenCount(localSettings))
+				if err != nil {
+					fakeEventForLogging := streamdeck.Event{
+						Action: "ca.michaelabon.streamdeck-inboxes.gmail.action",
+						Event:  "async_init",
+					}
+					_ = logEventError(fakeEventForLogging, err)
+				}
+
+				// Then start the ticker loop for periodic updates
 				for {
 					select {
 					case <-ticker.C:
@@ -58,7 +74,6 @@ func setupGmail(client *streamdeck.Client) {
 
 					case <-quit:
 						ticker.Stop()
-
 						return
 					}
 				}

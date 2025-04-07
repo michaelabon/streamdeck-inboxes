@@ -1,5 +1,5 @@
 {
   "devDependencies": {
-    "@elgato/cli": "^0.2.0"
+    "@elgato/cli": "^1.1.1"
   }
 }

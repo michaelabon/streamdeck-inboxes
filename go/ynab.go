@@ -14,6 +14,8 @@ import (
 const uuid = "ca.michaelabon.streamdeck-inboxes.ynab.action"
 
 func setupYnab(client *streamdeck.Client) {
+	const uuid = "ca.michaelabon.streamdeck-inboxes.ynab.action"
+
 	storage := map[string]*ynab.Settings{}
 	action := client.Action(uuid)
 	var quit chan struct{}
@@ -32,12 +34,31 @@ func setupYnab(client *streamdeck.Client) {
 			}
 			storage[event.Context] = settings
 
-			doUpdate(storage, client, event.Event)
+			// Show a loading indicator immediately
+			err := setLoading(ctx, client)
+			if err != nil {
+				return logEventError(event, err)
+			}
 
 			ticker := time.NewTicker(ynab.FastRefreshInterval)
 			quit = make(chan struct{})
 
 			go func() {
+				// Perform first update asynchronously
+				localCtx := sdcontext.WithContext(context.Background(), event.Context)
+				localSettings := settings
+
+				count, err := ynab.FetchUnseenCountAndNextAccountId(localSettings)
+				err = setTitle(localCtx, client)(count, err)
+				if err != nil {
+					fakeEventForLogging := streamdeck.Event{
+						Action: uuid,
+						Event:  "async_init",
+					}
+					_ = logEventError(fakeEventForLogging, err)
+				}
+
+				// Then start the ticker loop for periodic updates
 				for {
 					select {
 					case <-ticker.C:

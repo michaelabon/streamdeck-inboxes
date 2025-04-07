@@ -35,14 +35,32 @@ func setupFastmail(client *streamdeck.Client) {
 
 			storage[event.Context] = settings
 
-			err := setTitle(ctx, client)(fastmail.FetchUnseenCount(settings))
+			// Show a loading indicator immediately
+			err := setLoading(ctx, client)
 			if err != nil {
 				return logEventError(event, err)
 			}
 
 			ticker := time.NewTicker(fastmail.RefreshInterval)
 			quit = make(chan struct{})
+
 			go func() {
+				// Perform first update asynchronously
+				ctxStr := event.Context
+				localCtx := context.Background()
+				localCtx = sdcontext.WithContext(localCtx, ctxStr)
+				localSettings := settings
+
+				err := setTitle(localCtx, client)(fastmail.FetchUnseenCount(localSettings))
+				if err != nil {
+					fakeEventForLogging := streamdeck.Event{
+						Action: uuid,
+						Event:  "async_init",
+					}
+					_ = logEventError(fakeEventForLogging, err)
+				}
+
+				// Then start the ticker loop for periodic updates
 				for {
 					select {
 					case <-ticker.C:
