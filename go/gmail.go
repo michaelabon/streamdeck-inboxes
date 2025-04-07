@@ -74,6 +74,7 @@ func setupGmail(client *streamdeck.Client) {
 
 					case <-quit:
 						ticker.Stop()
+
 						return
 					}
 				}
