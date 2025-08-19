@@ -5,8 +5,8 @@ go 1.24.1
 require (
 	github.com/emersion/go-imap v1.2.1
 	github.com/samwho/streamdeck v0.0.0-20190725183037-2b866fdcb4a6
-	gitlab.com/gitlab-org/api/client-go v0.137.0
-	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
+	gitlab.com/gitlab-org/api/client-go v0.141.1
+	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842
 )
 
 require (
@@ -17,7 +17,6 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
 	golang.org/x/time v0.12.0 // indirect
 )
