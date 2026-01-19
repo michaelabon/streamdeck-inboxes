@@ -21,7 +21,7 @@ type Settings struct {
 	PersonalAccessToken string `json:"personalAccessToken"`
 	Server              string `json:"server"`
 	Username            string `json:"-"`
-	UserID              int    `json:"-"`
+	UserID              int64  `json:"-"`
 }
 
 const (
