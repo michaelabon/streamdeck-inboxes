@@ -20,6 +20,9 @@ var svgTemplate string
 // Service implements inbox.Service for GitLab.
 type Service struct{}
 
+// Compile-time check that Service implements the interface.
+var _ inbox.Service[*Settings, Result] = Service{}
+
 func (s Service) ActionUUID() string {
 	return "ca.michaelabon.streamdeck-inboxes.gitlab.action"
 }
@@ -32,7 +35,7 @@ func (s Service) LogPrefix() string {
 	return "[gitlab]"
 }
 
-func (s Service) ParseSettings(raw json.RawMessage) (any, error) {
+func (s Service) ParseSettings(raw json.RawMessage) (*Settings, error) {
 	var settings Settings
 	if err := json.Unmarshal(raw, &settings); err != nil {
 		return nil, err
@@ -41,19 +44,14 @@ func (s Service) ParseSettings(raw json.RawMessage) (any, error) {
 	return &settings, nil
 }
 
-func (s Service) FetchResult(ctx context.Context, settings any) (any, error) {
-	set, ok := settings.(*Settings)
-	if !ok {
-		return Result{}, nil
-	}
-
-	return FetchUnseenCount(set)
+func (s Service) FetchResult(ctx context.Context, settings *Settings) (Result, error) {
+	return FetchUnseenCount(settings)
 }
 
 func (s Service) Render(
 	ctx context.Context,
 	client *streamdeck.Client,
-	result any,
+	result Result,
 	err error,
 ) error {
 	if err != nil {
@@ -75,12 +73,7 @@ func (s Service) Render(
 		return err
 	}
 
-	r, ok := result.(Result)
-	if !ok {
-		return nil
-	}
-
-	total := r.ToDos + r.AssignedMRs + r.ReviewMRs + r.AssignedIssues
+	total := result.ToDos + result.AssignedMRs + result.ReviewMRs + result.AssignedIssues
 	if total == 0 {
 		_ = client.SetState(ctx, inbox.GoldState)
 	} else {
@@ -94,12 +87,12 @@ func (s Service) Render(
 
 	filledSvg := fmt.Sprintf(
 		svgTemplate,
-		r.AssignedIssues,
-		r.AssignedIssues,
-		r.AssignedMRs+r.ReviewMRs,
-		r.AssignedMRs+r.ReviewMRs,
-		r.ToDos,
-		r.ToDos,
+		result.AssignedIssues,
+		result.AssignedIssues,
+		result.AssignedMRs+result.ReviewMRs,
+		result.AssignedMRs+result.ReviewMRs,
+		result.ToDos,
+		result.ToDos,
 	)
 
 	setErr := client.SetImage(ctx, display.EncodeSVG(filledSvg), streamdeck.HardwareAndSoftware)
@@ -112,42 +105,34 @@ func (s Service) Render(
 	return nil
 }
 
-func (s Service) OpenURL(settings any, result any) string {
-	set, ok := settings.(*Settings)
-	if !ok || set.Server == "" {
+func (s Service) OpenURL(settings *Settings, result Result) string {
+	if settings.Server == "" {
 		return ""
 	}
 
-	gitlabURL, err := url.Parse(set.Server)
+	gitlabURL, err := url.Parse(settings.Server)
 	if err != nil {
-		return set.Server
-	}
-
-	r, ok := result.(Result)
-	if !ok {
-		gitlabURL = gitlabURL.JoinPath("/dashboard/todos")
-
-		return gitlabURL.String()
+		return settings.Server
 	}
 
 	switch {
-	case r.ToDos > 0:
+	case result.ToDos > 0:
 		gitlabURL = gitlabURL.JoinPath("/dashboard/todos")
-	case r.ReviewMRs > 0:
+	case result.ReviewMRs > 0:
 		gitlabURL = gitlabURL.JoinPath("/dashboard/merge_requests")
 		query := gitlabURL.Query()
-		query.Set("reviewer_username", set.Username)
+		query.Set("reviewer_username", settings.Username)
 		gitlabURL.RawQuery = query.Encode()
-	case r.AssignedMRs > 0:
+	case result.AssignedMRs > 0:
 		gitlabURL = gitlabURL.JoinPath("/dashboard/merge_requests")
 		query := gitlabURL.Query()
-		query.Set("assignee_username", set.Username)
+		query.Set("assignee_username", settings.Username)
 		gitlabURL.RawQuery = query.Encode()
-	case r.AssignedIssues > 0:
+	case result.AssignedIssues > 0:
 		gitlabURL = gitlabURL.JoinPath("/dashboard/issues")
 		query := gitlabURL.Query()
 		query.Set("state", "opened")
-		query.Set("assignee_username[]", set.Username)
+		query.Set("assignee_username[]", settings.Username)
 		gitlabURL.RawQuery = query.Encode()
 	default:
 		gitlabURL = gitlabURL.JoinPath("/dashboard/projects/starred")

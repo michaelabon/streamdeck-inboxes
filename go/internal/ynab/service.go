@@ -18,6 +18,9 @@ type Result struct {
 // Service implements inbox.Service for YNAB (You Need A Budget).
 type Service struct{}
 
+// Compile-time check that Service implements the interface.
+var _ inbox.Service[*Settings, Result] = Service{}
+
 func (s Service) ActionUUID() string {
 	return "ca.michaelabon.streamdeck-inboxes.ynab.action"
 }
@@ -30,7 +33,7 @@ func (s Service) LogPrefix() string {
 	return "[ynab]"
 }
 
-func (s Service) ParseSettings(raw json.RawMessage) (any, error) {
+func (s Service) ParseSettings(raw json.RawMessage) (*Settings, error) {
 	var settings Settings
 	if err := json.Unmarshal(raw, &settings); err != nil {
 		return nil, err
@@ -39,58 +42,38 @@ func (s Service) ParseSettings(raw json.RawMessage) (any, error) {
 	return &settings, nil
 }
 
-func (s Service) FetchResult(ctx context.Context, settings any) (any, error) {
-	set, ok := settings.(*Settings)
-	if !ok {
-		return Result{Count: 0}, nil
-	}
-
+func (s Service) FetchResult(ctx context.Context, settings *Settings) (Result, error) {
 	// FetchUnseenCountAndNextAccountId modifies settings.NextAccountId as a side effect
-	count, err := FetchUnseenCountAndNextAccountId(set)
+	count, err := FetchUnseenCountAndNextAccountId(settings)
 	if err != nil {
 		return Result{Count: 0}, err
 	}
 
 	return Result{
 		Count:         count,
-		NextAccountId: set.NextAccountId,
+		NextAccountId: settings.NextAccountId,
 	}, nil
 }
 
 func (s Service) Render(
 	ctx context.Context,
 	client *streamdeck.Client,
-	result any,
+	result Result,
 	err error,
 ) error {
-	var count uint
-	if result != nil {
-		if r, ok := result.(Result); ok {
-			count = r.Count
-		}
-	}
-
-	return inbox.RenderCount(ctx, client, count, err)
+	return inbox.RenderCount(ctx, client, result.Count, err)
 }
 
-func (s Service) OpenURL(settings any, result any) string {
-	set, ok := settings.(*Settings)
-	if !ok {
-		return "https://app.ynab.com/"
-	}
-
+func (s Service) OpenURL(settings *Settings, result Result) string {
 	baseURL := "https://app.ynab.com/"
-	if set.BudgetUuid == "" {
+	if settings.BudgetUuid == "" {
 		return baseURL
 	}
 
-	url := baseURL + set.BudgetUuid + "/accounts"
+	url := baseURL + settings.BudgetUuid + "/accounts"
 
-	// Use NextAccountId from result if available
-	if result != nil {
-		if r, ok := result.(Result); ok && r.NextAccountId != "" {
-			url += "/" + r.NextAccountId
-		}
+	if result.NextAccountId != "" {
+		url += "/" + result.NextAccountId
 	}
 
 	return url

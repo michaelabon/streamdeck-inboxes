@@ -12,6 +12,9 @@ import (
 // Service implements inbox.Service for Gmail via IMAP.
 type Service struct{}
 
+// Compile-time check that Service implements the interface.
+var _ inbox.Service[*Settings, uint] = Service{}
+
 func (s Service) ActionUUID() string {
 	return "ca.michaelabon.streamdeck-inboxes.gmail.action"
 }
@@ -24,7 +27,7 @@ func (s Service) LogPrefix() string {
 	return "[gmail]"
 }
 
-func (s Service) ParseSettings(raw json.RawMessage) (any, error) {
+func (s Service) ParseSettings(raw json.RawMessage) (*Settings, error) {
 	var settings Settings
 	if err := json.Unmarshal(raw, &settings); err != nil {
 		return nil, err
@@ -33,36 +36,19 @@ func (s Service) ParseSettings(raw json.RawMessage) (any, error) {
 	return &settings, nil
 }
 
-func (s Service) FetchResult(ctx context.Context, settings any) (any, error) {
-	set, ok := settings.(*Settings)
-	if !ok {
-		return uint(0), nil
-	}
-
-	return FetchUnseenCount(*set)
+func (s Service) FetchResult(ctx context.Context, settings *Settings) (uint, error) {
+	return FetchUnseenCount(*settings)
 }
 
 func (s Service) Render(
 	ctx context.Context,
 	client *streamdeck.Client,
-	result any,
+	result uint,
 	err error,
 ) error {
-	var count uint
-	if result != nil {
-		if c, ok := result.(uint); ok {
-			count = c
-		}
-	}
-
-	return inbox.RenderCount(ctx, client, count, err)
+	return inbox.RenderCount(ctx, client, result, err)
 }
 
-func (s Service) OpenURL(settings any, result any) string {
-	set, ok := settings.(*Settings)
-	if !ok {
-		return "https://mail.google.com"
-	}
-
-	return "https://mail.google.com/mail/u/?authuser=" + set.Username
+func (s Service) OpenURL(settings *Settings, result uint) string {
+	return "https://mail.google.com/mail/u/?authuser=" + settings.Username
 }

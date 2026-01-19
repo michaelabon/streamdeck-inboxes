@@ -9,27 +9,27 @@ import (
 )
 
 // Service defines the contract for any inbox service.
-// Implement this interface to add a new inbox type.
-type Service interface {
+// The type parameters provide compile-time type safety:
+//   - S: the settings type for this service
+//   - R: the result type returned by FetchResult
+type Service[S any, R any] interface {
 	// ActionUUID returns the Stream Deck action identifier
-	// e.g., "ca.michaelabon.streamdeck-inboxes.marvin.action"
 	ActionUUID() string
 
 	// RefreshInterval returns how often to poll for updates
 	RefreshInterval() time.Duration
 
 	// ParseSettings unmarshals JSON settings into the service's settings type
-	ParseSettings(raw json.RawMessage) (any, error)
+	ParseSettings(raw json.RawMessage) (S, error)
 
-	// FetchResult fetches the current inbox state (count or multi-count struct)
-	FetchResult(ctx context.Context, settings any) (any, error)
+	// FetchResult fetches the current inbox state
+	FetchResult(ctx context.Context, settings S) (R, error)
 
 	// Render updates the Stream Deck button display
-	Render(ctx context.Context, client *streamdeck.Client, result any, err error) error
+	Render(ctx context.Context, client *streamdeck.Client, result R, err error) error
 
-	// OpenURL returns the URL to open when the button is pressed.
-	// Result is provided so services like GitLab can route to different pages.
-	OpenURL(settings any, result any) string
+	// OpenURL returns the URL to open when the button is pressed
+	OpenURL(settings S, result R) string
 
 	// LogPrefix returns the logging prefix, e.g., "[marvin]"
 	LogPrefix() string

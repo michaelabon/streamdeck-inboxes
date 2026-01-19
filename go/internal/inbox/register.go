@@ -11,18 +11,21 @@ import (
 	sdcontext "github.com/samwho/streamdeck/context"
 )
 
-// buttonState holds per-button state including cached result for URL routing
-type buttonState struct {
-	settings any
-	result   any
-}
-
 // Register sets up all Stream Deck event handlers for a service.
-// This replaces the 150-line setup{Service} functions.
-func Register(client *streamdeck.Client, svc Service) {
+// The type parameters match the service's settings and result types,
+// providing compile-time type safety throughout the event handlers.
+func Register[S any, R any](client *streamdeck.Client, svc Service[S, R]) {
 	action := client.Action(svc.ActionUUID())
+
+	// buttonState holds per-button state with the service's concrete types
+	type buttonState struct {
+		settings S
+		result   R
+	}
 	storage := map[string]*buttonState{}
 	var quit chan struct{}
+
+	logPrefix := svc.LogPrefix()
 
 	action.RegisterHandler(
 		streamdeck.WillAppear,
@@ -40,7 +43,7 @@ func Register(client *streamdeck.Client, svc Service) {
 
 			// Show loading state
 			if err := SetLoading(ctx, client); err != nil {
-				return logError(svc, event, err)
+				return logError(logPrefix, event, err)
 			}
 
 			// Start polling
@@ -58,7 +61,7 @@ func Register(client *streamdeck.Client, svc Service) {
 					state.result = result
 				}
 				if renderErr := svc.Render(localCtx, client, result, fetchErr); renderErr != nil {
-					log.Printf("%s render error: %v", svc.LogPrefix(), renderErr)
+					log.Printf("%s render error: %v", logPrefix, renderErr)
 				}
 
 				// Periodic updates
@@ -70,7 +73,7 @@ func Register(client *streamdeck.Client, svc Service) {
 							result, fetchErr := svc.FetchResult(ctx, state.settings)
 							state.result = result
 							if renderErr := svc.Render(ctx, client, result, fetchErr); renderErr != nil {
-								log.Printf("%s render error: %v", svc.LogPrefix(), renderErr)
+								log.Printf("%s render error: %v", logPrefix, renderErr)
 							}
 						}
 					case <-quit:
@@ -121,7 +124,7 @@ func Register(client *streamdeck.Client, svc Service) {
 				state.result = result
 			}
 			if renderErr := svc.Render(ctx, client, result, fetchErr); renderErr != nil {
-				return logError(svc, event, renderErr)
+				return logError(logPrefix, event, renderErr)
 			}
 
 			return nil
@@ -141,7 +144,7 @@ func Register(client *streamdeck.Client, svc Service) {
 				return err
 			}
 
-			var result any
+			var result R
 			if state, ok := storage[event.Context]; ok {
 				result = state.result
 			}
@@ -150,10 +153,10 @@ func Register(client *streamdeck.Client, svc Service) {
 			if urlStr != "" {
 				parsedURL, err := url.Parse(urlStr)
 				if err != nil {
-					return logError(svc, event, err)
+					return logError(logPrefix, event, err)
 				}
 				if err := client.OpenURL(ctx, *parsedURL); err != nil {
-					return logError(svc, event, err)
+					return logError(logPrefix, event, err)
 				}
 			}
 
@@ -163,7 +166,7 @@ func Register(client *streamdeck.Client, svc Service) {
 				state.result = result
 			}
 			if renderErr := svc.Render(ctx, client, result, fetchErr); renderErr != nil {
-				return logError(svc, event, renderErr)
+				return logError(logPrefix, event, renderErr)
 			}
 
 			return nil
@@ -171,8 +174,8 @@ func Register(client *streamdeck.Client, svc Service) {
 	)
 }
 
-func logError(svc Service, event streamdeck.Event, err error) error {
-	log.Printf("%s[%s] %v", svc.LogPrefix(), event.Event, err)
+func logError(logPrefix string, event streamdeck.Event, err error) error {
+	log.Printf("%s[%s] %v", logPrefix, event.Event, err)
 
 	return err
 }
