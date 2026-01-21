@@ -172,6 +172,45 @@ func Register[S any, R any](client *streamdeck.Client, svc Service[S, R]) {
 			return nil
 		},
 	)
+
+	// Check if service supports SendToPlugin handling for property inspector communication
+	if handler, ok := any(svc).(SendToPluginHandler[S]); ok {
+		action.RegisterHandler(
+			streamdeck.SendToPlugin,
+			func(ctx context.Context, client *streamdeck.Client, event streamdeck.Event) error {
+				// Parse the payload to extract settings
+				var payload struct {
+					Settings json.RawMessage `json:"settings"`
+				}
+				if err := json.Unmarshal(event.Payload, &payload); err != nil {
+					return err
+				}
+
+				settings, err := svc.ParseSettings(payload.Settings)
+				if err != nil {
+					// Send error response back to PI
+					return client.SendToPropertyInspector(ctx, map[string]interface{}{
+						"error": err.Error(),
+					})
+				}
+
+				response, err := handler.HandleSendToPlugin(ctx, client, event.Payload, settings)
+				if err != nil {
+					log.Printf("%s SendToPlugin error: %v", logPrefix, err)
+
+					return client.SendToPropertyInspector(ctx, map[string]interface{}{
+						"error": err.Error(),
+					})
+				}
+
+				if response != nil {
+					return client.SendToPropertyInspector(ctx, response)
+				}
+
+				return nil
+			},
+		)
+	}
 }
 
 func logError(logPrefix string, event streamdeck.Event, err error) error {

@@ -34,3 +34,12 @@ type Service[S any, R any] interface {
 	// LogPrefix returns the logging prefix, e.g., "[marvin]"
 	LogPrefix() string
 }
+
+// SendToPluginHandler is an optional interface for services that need
+// to handle property inspector communication (e.g., fetching dynamic options).
+type SendToPluginHandler[S any] interface {
+	// HandleSendToPlugin processes messages from the property inspector.
+	// Returns a response payload to send back, or nil if no response needed.
+	HandleSendToPlugin(ctx context.Context, client *streamdeck.Client,
+		payload json.RawMessage, settings S) (interface{}, error)
+}
