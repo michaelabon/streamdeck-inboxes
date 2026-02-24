@@ -5,7 +5,7 @@ go 1.24.6
 require (
 	github.com/emersion/go-imap v1.2.1
 	github.com/samwho/streamdeck v0.0.0-20190725183037-2b866fdcb4a6
-	gitlab.com/gitlab-org/api/client-go v1.25.0
+	gitlab.com/gitlab-org/api/client-go v1.41.0
 	golang.org/x/exp v0.0.0-20250813145105-42675adae3e6
 )
 
