@@ -5,7 +5,7 @@ go 1.26.1
 require (
 	github.com/emersion/go-imap v1.2.1
 	github.com/samwho/streamdeck v0.0.0-20190725183037-2b866fdcb4a6
-	gitlab.com/gitlab-org/api/client-go v1.41.0
+	gitlab.com/gitlab-org/api/client-go v1.46.0
 	golang.org/x/exp v0.0.0-20250813145105-42675adae3e6
 )
 
@@ -16,7 +16,7 @@ require (
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
-	golang.org/x/oauth2 v0.35.0 // indirect
-	golang.org/x/text v0.34.0 // indirect
-	golang.org/x/time v0.14.0 // indirect
+	golang.org/x/oauth2 v0.36.0 // indirect
+	golang.org/x/text v0.35.0 // indirect
+	golang.org/x/time v0.15.0 // indirect
 )
