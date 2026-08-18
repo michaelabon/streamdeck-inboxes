@@ -6,7 +6,9 @@ Stay on top of Inbox Zero with these Elgato Stream Deck actions.
 
 - [Amazing Marvin][Marvin]
 - [Fastmail][]
+- [GitLab][]
 - [Gmail][]
+- [Todoist][]
 - [You Need A Budget (YNAB)][YNAB]
 
 ## How to use it
@@ -58,5 +60,7 @@ GNU General Public License v3.0, available at LICENSE
 
 [Marvin]: https://amazingmarvin.com/
 [Fastmail]: https://www.fastmail.com
+[GitLab]: https://gitlab.com
 [Gmail]: https://mail.google.com
+[Todoist]: https://todoist.com
 [YNAB]: https://www.ynab.com/
